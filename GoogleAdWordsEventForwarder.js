@@ -57,8 +57,9 @@
 
                     if (reportEvent && reportingService) {
                         reportingService(self, event);
-                        return 'Successfully sent to ' + name;
                     }
+
+                    return 'Successfully sent to ' + name;
                 }
                 catch (e) {
                     return 'Failed to send to: ' + name + ' ' + e;
@@ -116,7 +117,6 @@
         }
 
         function logPageEvent(event, isPageEvent) {
-
             var conversionLabel = getConversionLabel(event, isPageEvent);
             if (typeof (conversionLabel) != 'string') {
                 return false;
