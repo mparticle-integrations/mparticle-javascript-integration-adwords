@@ -68,6 +68,14 @@
             return 'Can\'t send to forwarder ' + name + ', not initialized';
         }
 
+        function sendOrQueueEvent(adWordEvent) {
+            if (window.google_trackConversion) {
+                window.google_trackConversion(adWordEvent);
+            } else {
+                eventQueue.push(event);
+            }
+        }
+
         function logCommerce(event) {
             if (event.ProductAction
                 && event.ProductAction.ProductList
@@ -99,11 +107,7 @@
 
                 adWordEvent.google_custom_params = getCustomProps(event, isPageEvent);
 
-                if (window.google_trackConversion) {
-                    window.google_trackConversion(adWordEvent);
-                } else {
-                    eventQueue.push(event);
-                }
+                sendOrQueueEvent(adWordEvent);
 
                 return true;
             }
@@ -122,7 +126,8 @@
             adWordEvent.google_conversion_label = conversionLabel;
             adWordEvent.google_custom_params = getCustomProps(event, isPageEvent);
 
-            window.google_trackConversion(adWordEvent);
+            sendOrQueueEvent(adWordEvent);
+
             return true;
         }
 
