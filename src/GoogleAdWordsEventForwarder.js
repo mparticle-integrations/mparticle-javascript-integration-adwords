@@ -17,6 +17,7 @@
 
 (function (window) {
     var name = 'GoogleAdWords',
+        moduleId = 82,
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
@@ -57,9 +58,9 @@
 
                     if (reportEvent && reportingService) {
                         reportingService(self, event);
-                    }
 
-                    return 'Successfully sent to ' + name;
+                        return 'Successfully sent to ' + name;
+                    }
                 }
                 catch (e) {
                     return 'Failed to send to: ' + name + ' ' + e;
@@ -206,7 +207,6 @@
         }
 
         function initForwarder(settings, service, testMode) {
-
             forwarderSettings = settings;
             reportingService = service;
 
@@ -260,13 +260,29 @@
         this.process = processEvent;
     };
 
+    function getId() {
+        return moduleId;
+    }
+
+    function register(config) {
+        if (config.kits) {
+            config.kits[name] = {
+                constructor: constructor
+            };
+        }
+    }
+
     if (!window || !window.mParticle || !window.mParticle.addForwarder) {
         return;
     }
 
     window.mParticle.addForwarder({
         name: name,
-        constructor: constructor
+        constructor: constructor,
+        getId: getId
     });
 
+    module.exports = {
+        register: register
+    };
 })(window);
