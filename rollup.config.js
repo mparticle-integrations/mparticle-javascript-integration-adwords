@@ -21,7 +21,7 @@ export default [
     {
         input: 'src/GoogleAdWordsEventForwarder.js',
         output: {
-            file: 'dist/GoogleAdWordsEventForwarder.js',
+            file: 'dist/GoogleAdWordsEventForwarder.iife.js',
             format: 'iife',
             exports: 'named',
             name: 'mpAmplitudeKit',
@@ -37,7 +37,7 @@ export default [
     {
         input: 'src/GoogleAdWordsEventForwarder.js',
         output: {
-            file: 'npm/GoogleAdWordsEventForwarder.js',
+            file: 'dist/GoogleAdWordsEventForwarder.common.js',
             format: 'cjs',
             exports: 'named',
             name: 'mpAmplitudeKit',
