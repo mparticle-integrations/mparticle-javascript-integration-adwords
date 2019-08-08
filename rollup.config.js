@@ -8,7 +8,7 @@ export default [
             file: 'GoogleAdWordsEventForwarder.js',
             format: 'iife',
             exports: 'named',
-            name: 'mpAmplitudeKit',
+            name: 'mpAdWordsKit',
             strict: false
         },
         plugins: [
@@ -24,7 +24,7 @@ export default [
             file: 'dist/GoogleAdWordsEventForwarder.iife.js',
             format: 'iife',
             exports: 'named',
-            name: 'mpAmplitudeKit',
+            name: 'mpAdWordsKit',
             strict: false
         },
         plugins: [
@@ -40,7 +40,7 @@ export default [
             file: 'dist/GoogleAdWordsEventForwarder.common.js',
             format: 'cjs',
             exports: 'named',
-            name: 'mpAmplitudeKit',
+            name: 'mpAdWordsKit',
             strict: false
         },
         plugins: [

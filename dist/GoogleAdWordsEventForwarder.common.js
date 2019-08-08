@@ -222,10 +222,7 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
         }
 
         function calculateJSHash(eventDataType, eventCategory, name) {
-            var preHash =
-                (eventDataType || '') + '' +
-                (eventCategory || '') + '' +
-                (name || '');
+            var preHash = '' + eventDataType + ('' + eventCategory) + '' + (name || '');
 
             return mParticle.generateHash(preHash);
         }

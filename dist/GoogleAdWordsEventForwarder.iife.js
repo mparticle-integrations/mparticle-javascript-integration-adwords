@@ -1,4 +1,4 @@
-var mpAmplitudeKit = (function (exports) {
+var mpAdWordsKit = (function (exports) {
   /*!
    * isobject <https://github.com/jonschlinkert/isobject>
    *
@@ -221,10 +221,7 @@ var mpAmplitudeKit = (function (exports) {
           }
 
           function calculateJSHash(eventDataType, eventCategory, name) {
-              var preHash =
-                  (eventDataType || '') + '' +
-                  (eventCategory || '') + '' +
-                  (name || '');
+              var preHash = '' + eventDataType + ('' + eventCategory) + '' + (name || '');
 
               return mParticle.generateHash(preHash);
           }
