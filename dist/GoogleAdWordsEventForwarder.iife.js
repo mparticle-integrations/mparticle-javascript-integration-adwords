@@ -221,7 +221,7 @@ var mpAdWordsKit = (function (exports) {
           }
 
           function calculateJSHash(eventDataType, eventCategory, name) {
-              var preHash = '' + eventDataType + ('' + eventCategory) + '' + (name || '');
+              var preHash = [eventDataType, eventCategory, name].join('');
 
               return mParticle.generateHash(preHash);
           }
