@@ -15,8 +15,6 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-    var isobject = require('isobject');
-
     var name = 'GoogleAdWords',
         moduleId = 82,
         MessageType = {
@@ -46,7 +44,6 @@
 
             if (isInitialized) {
                 try {
-
                     if (event.EventDataType == MessageType.PageView) {
                         reportEvent = logPageEvent(event, false);
                     }
@@ -62,9 +59,11 @@
 
                         return 'Successfully sent to ' + name;
                     }
+
+                    return 'Can\'t send to forwarder: ' + name + '. Event not mapped';
                 }
                 catch (e) {
-                    return 'Failed to send to: ' + name + ' ' + e;
+                    return 'Can\'t send to forwarder: ' + name + ' ' + e;
                 }
             }
 
@@ -135,18 +134,16 @@
 
         function getBaseAdWordEvent() {
             var adWordEvent = {};
-
             adWordEvent.google_conversion_value = 0;
             adWordEvent.google_conversion_language = 'en';
             adWordEvent.google_conversion_format = '3';
             adWordEvent.google_conversion_color = 'ffffff';
             adWordEvent.google_remarketing_only = forwarderSettings.remarketingOnly == 'True';
-            adWordEvent.google_conversion_id = parseInt(forwarderSettings.conversionId);
+            adWordEvent.google_conversion_id = forwarderSettings.conversionId;
             return adWordEvent;
         }
 
         function getConversionLabel(event, isPageEvent) {
-
             var jsHash = calculateJSHash(event.EventDataType, event.EventCategory, event.EventName);
             var type = isPageEvent ? 'EventClass.Id' : 'EventClassDetails.Id';
             var conversionLabel = null;
@@ -160,7 +157,6 @@
         }
 
         function getCustomProps(event, isPageEvent) {
-
             var customProps = {};
             var attributes = event.EventAttributes;
             var type = isPageEvent ? 'EventAttributeClass.Id' : 'EventAttributeClassDetails.Id';
@@ -268,12 +264,12 @@
             return;
         }
 
-        if (!isobject(config)) {
+        if (!isObject(config)) {
             window.console.log('\'config\' must be an object. You passed in a ' + typeof config);
             return;
         }
 
-        if (isobject(config.kits)) {
+        if (isObject(config.kits)) {
             config.kits[name] = {
                 constructor: constructor
             };
@@ -286,6 +282,10 @@
         window.console.log('Successfully registered ' + name + ' to your mParticle configuration');
     }
 
+    function isObject(val) {
+        return val != null && typeof val === 'object' && Array.isArray(val) === false;
+    }
+
     if (window && window.mParticle && window.mParticle.addForwarder) {
         window.mParticle.addForwarder({
             name: name,
@@ -294,6 +294,6 @@
         });
     }
 
-    module.exports = {
+    export default {
         register: register
     };

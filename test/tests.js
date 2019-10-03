@@ -112,7 +112,7 @@ describe('Adwords forwarder', function () {
         window.google_track_data.should.have.property("google_conversion_language", "en");
         window.google_track_data.should.have.property("google_conversion_color", "ffffff")
         window.google_track_data.should.have.property("google_conversion_format", "3")
-        window.google_track_data.should.have.property("google_conversion_id", 123123123)
+        window.google_track_data.should.have.property("google_conversion_id", 'AW-123123123')
     }
 
     describe("Page View Conversion Label", function () {
@@ -122,13 +122,12 @@ describe('Adwords forwarder', function () {
 
             mParticle.forwarder.init({
                 labels: JSON.stringify(map),
-                conversionId: 123123123
+                conversionId: 'AW-123123123'
             }, reportService.cb, 1, true);
         });
 
 
         it('should have conversion labels for page view', function (done) {
-
             var successMessage = mParticle.forwarder.process({
                 EventName: 'Homepage',
                 EventDataType: MessageType.PageView,
@@ -155,7 +154,7 @@ describe('Adwords forwarder', function () {
 
             mParticle.forwarder.init({
                 labels: JSON.stringify(map),
-                conversionId: 123123123
+                conversionId: 'AW-123123123'
             }, reportService.cb, 1, true);
         });
 
@@ -190,12 +189,11 @@ describe('Adwords forwarder', function () {
 
             mParticle.forwarder.init({
                 labels: JSON.stringify(map),
-                conversionId: 123123123
+                conversionId: 'AW-123123123'
             }, reportService.cb, 1, true);
         });
 
         it('should have conversion labels for commerce event', function (done) {
-
             var successMessage = mParticle.forwarder.process({
                 EventName: "eCommerce - Purchase",
                 EventDataType: MessageType.Commerce,
@@ -240,7 +238,7 @@ describe('Adwords forwarder', function () {
             mParticle.forwarder.init({
                 labels: JSON.stringify(labels),
                 customParameters: JSON.stringify(attr),
-                conversionId: 123123123
+                conversionId: 'AW-123123123'
             }, reportService.cb, 1, true);
         });
 
@@ -272,12 +270,11 @@ describe('Adwords forwarder', function () {
 
             mParticle.forwarder.init({
                 labels: JSON.stringify(map),
-                conversionId: 123123123
+                conversionId: 'AW-123123123'
             }, reportService.cb, 1, true);
         });
 
         it('should not forward unmapped events', function (done) {
-
             var failMessage = mParticle.forwarder.process({
                 EventName: 'Something random',
                 EventDataType: MessageType.Commerce,
@@ -298,7 +295,7 @@ describe('Adwords forwarder', function () {
             // The ids are calculated based on the events used in the tests below so they must match exactly.
             mParticle.forwarder.init({
                 labels: 'baaaaaddddddd json',
-                conversionId: 123123123
+                conversionId: 'AW-123123123'
             }, reportService.cb, 1, true);
         });
 
@@ -325,7 +322,7 @@ describe('Adwords forwarder', function () {
             // The ids are calculated based on the events used in the tests below so they must match exactly.
             mParticle.forwarder.init({
                 customParameters: 'sdpfuhasdflasdjfnsdjfsdjfn really baddd json',
-                conversionId: 123123123
+                conversionId: 'AW-123123123'
             }, reportService.cb, 1, true);
         });
 

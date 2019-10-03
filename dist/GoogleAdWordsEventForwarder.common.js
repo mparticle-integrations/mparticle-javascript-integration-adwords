@@ -1,26 +1,5 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
-/*!
- * isobject <https://github.com/jonschlinkert/isobject>
- *
- * Copyright (c) 2014-2017, Jon Schlinkert.
- * Released under the MIT License.
- */
-
-function isObject(val) {
-  return val != null && typeof val === 'object' && Array.isArray(val) === false;
-}
-
-var isobject = /*#__PURE__*/Object.freeze({
-  'default': isObject
-});
-
-function getCjsExportFromNamespace (n) {
-	return n && n['default'] || n;
-}
-
-var isobject$1 = getCjsExportFromNamespace(isobject);
-
 /* eslint-disable no-undef*/
 
 //
@@ -37,8 +16,6 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-
-    
 
     var name = 'GoogleAdWords',
         moduleId = 82,
@@ -69,7 +46,6 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
 
             if (isInitialized) {
                 try {
-
                     if (event.EventDataType == MessageType.PageView) {
                         reportEvent = logPageEvent(event, false);
                     }
@@ -85,9 +61,11 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
 
                         return 'Successfully sent to ' + name;
                     }
+
+                    return 'Can\'t send to forwarder: ' + name + '. Event not mapped';
                 }
                 catch (e) {
-                    return 'Failed to send to: ' + name + ' ' + e;
+                    return 'Can\'t send to forwarder: ' + name + ' ' + e;
                 }
             }
 
@@ -158,18 +136,16 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
 
         function getBaseAdWordEvent() {
             var adWordEvent = {};
-
             adWordEvent.google_conversion_value = 0;
             adWordEvent.google_conversion_language = 'en';
             adWordEvent.google_conversion_format = '3';
             adWordEvent.google_conversion_color = 'ffffff';
             adWordEvent.google_remarketing_only = forwarderSettings.remarketingOnly == 'True';
-            adWordEvent.google_conversion_id = parseInt(forwarderSettings.conversionId);
+            adWordEvent.google_conversion_id = forwarderSettings.conversionId;
             return adWordEvent;
         }
 
         function getConversionLabel(event, isPageEvent) {
-
             var jsHash = calculateJSHash(event.EventDataType, event.EventCategory, event.EventName);
             var type = isPageEvent ? 'EventClass.Id' : 'EventClassDetails.Id';
             var conversionLabel = null;
@@ -183,7 +159,6 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
         }
 
         function getCustomProps(event, isPageEvent) {
-
             var customProps = {};
             var attributes = event.EventAttributes;
             var type = isPageEvent ? 'EventAttributeClass.Id' : 'EventAttributeClassDetails.Id';
@@ -291,12 +266,12 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
             return;
         }
 
-        if (!isobject$1(config)) {
+        if (!isObject(config)) {
             window.console.log('\'config\' must be an object. You passed in a ' + typeof config);
             return;
         }
 
-        if (isobject$1(config.kits)) {
+        if (isObject(config.kits)) {
             config.kits[name] = {
                 constructor: constructor
             };
@@ -307,6 +282,10 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
             };
         }
         window.console.log('Successfully registered ' + name + ' to your mParticle configuration');
+    }
+
+    function isObject(val) {
+        return val != null && typeof val === 'object' && Array.isArray(val) === false;
     }
 
     if (window && window.mParticle && window.mParticle.addForwarder) {
@@ -320,7 +299,5 @@ var isobject$1 = getCjsExportFromNamespace(isobject);
     var GoogleAdWordsEventForwarder = {
         register: register
     };
-var GoogleAdWordsEventForwarder_1 = GoogleAdWordsEventForwarder.register;
 
 exports.default = GoogleAdWordsEventForwarder;
-exports.register = GoogleAdWordsEventForwarder_1;

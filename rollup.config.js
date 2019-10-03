@@ -1,6 +1,3 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-
 export default [
     {
         input: 'src/GoogleAdWordsEventForwarder.js',
@@ -10,13 +7,7 @@ export default [
             exports: 'named',
             name: 'mpAdWordsKit',
             strict: false
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            commonjs()
-        ]
+        }
     },
     {
         input: 'src/GoogleAdWordsEventForwarder.js',
@@ -26,13 +17,7 @@ export default [
             exports: 'named',
             name: 'mpAdWordsKit',
             strict: false
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            commonjs()
-        ]
+        }
     },
     {
         input: 'src/GoogleAdWordsEventForwarder.js',
@@ -42,12 +27,6 @@ export default [
             exports: 'named',
             name: 'mpAdWordsKit',
             strict: false
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            commonjs()
-        ]
+        }
     }
 ]
