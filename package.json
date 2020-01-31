@@ -21,7 +21,7 @@
     "should": "^7.1.0"
   },
   "dependencies": {
-    "@mparticle/web-sdk": "^2.9.12-rc.2"
+    "@mparticle/web-sdk": "^2.11.1"
   },
   "license": "Apache-2.0"
 }
