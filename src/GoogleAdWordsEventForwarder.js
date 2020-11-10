@@ -74,7 +74,7 @@
             if (window.google_trackConversion) {
                 window.google_trackConversion(adWordEvent);
             } else {
-                eventQueue.push(event);
+                eventQueue.push(adWordEvent);
             }
         }
 
