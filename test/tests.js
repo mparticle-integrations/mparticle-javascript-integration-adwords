@@ -115,232 +115,543 @@ describe('Adwords forwarder', function () {
         window.google_track_data.should.have.property("google_conversion_id", 'AW-123123123')
     }
 
-    describe("Page View Conversion Label", function () {
-        before(function () {
+    describe('Legacy Conversion Async', function () {
+        describe("Page View Conversion Label", function () {
+            before(function () {
 
-            var map = [{ "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') }]
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') }]
 
-            mParticle.forwarder.init({
-                labels: JSON.stringify(map),
-                conversionId: 'AW-123123123'
-            }, reportService.cb, 1, true);
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(map),
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should have conversion labels for page view', function (done) {
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageView,
+                    EventAttributes: {
+                        showcase: 'something',
+                        test: 'thisoneshouldgetmapped',
+                        mp: 'rock'
+                    }
+                });
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                checkCommonProperties();
+                window.google_track_data.should.have.property('google_conversion_label', "pageViewLabel123");
+
+                done();
+            });
+        });
+
+        describe("Page Event Conversion Label", function () {
+            before(function () {
+
+                var map = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" +  EventType.Navigation + 'Homepage') }]
+
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(map),
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should have conversion labels for page event', function (done) {
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageEvent,
+                    EventCategory: EventType.Navigation,
+                    EventAttributes: {
+                        showcase: 'something',
+                        test: 'thisoneshouldgetmapped',
+                        mp: 'rock'
+                    }
+                });
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                checkCommonProperties();
+                window.google_track_data.should.have.property('google_conversion_label', "pageEventLabel123");
+
+                done();
+            });
         });
 
 
-        it('should have conversion labels for page view', function (done) {
-            var successMessage = mParticle.forwarder.process({
-                EventName: 'Homepage',
-                EventDataType: MessageType.PageView,
-                EventAttributes: {
-                    showcase: 'something',
-                    test: 'thisoneshouldgetmapped',
-                    mp: 'rock'
-                }
+        describe("Commerce Event Conversion Label", function () {
+            before(function () {
+
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
+
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(map),
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
             });
 
-            successMessage.should.not.be.null();
-            successMessage.should.be.equal("Successfully sent to GoogleAdWords")
-            checkCommonProperties();
-            window.google_track_data.should.have.property('google_conversion_label', "pageViewLabel123");
+            it('should have conversion labels for commerce event', function (done) {
+                var successMessage = mParticle.forwarder.process({
+                    EventName: "eCommerce - Purchase",
+                    EventDataType: MessageType.Commerce,
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1
+                            }
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: "USD"
+                });
 
-            done();
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                checkCommonProperties();
+                window.google_track_data.should.have.property('google_conversion_label', "commerceLabel123");
+
+                done();
+            });
+        })
+
+        describe("Custom Parameters", function () {
+            before(function () {
+
+                var labels = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') }]
+                var attr = [{ "maptype": "EventAttributeClass.Id", "value": "mycustomprop", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'attributekey') }]
+
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(labels),
+                    customParameters: JSON.stringify(attr),
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
+            });
+
+            it('should have custom params for page event', function (done) {
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageEvent,
+                    EventCategory: EventType.Navigation,
+                    EventAttributes: {
+                        attributekey: 'attributevalue'
+                    }
+                });
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                checkCommonProperties();
+                window.google_track_data.should.have.property('google_custom_params');
+                Object.keys(window.google_track_data.google_custom_params).length.should.be.equal(1);
+                window.google_track_data.google_custom_params.should.have.property('mycustomprop', 'attributevalue')
+                done();
+            });
+        });
+
+        describe("Unmapped conversion labels", function () {
+            before(function () {
+
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
+
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(map),
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
+            });
+
+            it('should not forward unmapped events', function (done) {
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'Something random',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        showcase: 'something'
+                    }
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder")
+                done();
+            });
+        });
+
+
+        describe("Bad Label Json", function () {
+            before(function () {
+                // The ids are calculated based on the events used in the tests below so they must match exactly.
+                mParticle.forwarder.init({
+                    labels: 'baaaaaddddddd json',
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should not forward with bad labels json', function (done) {
+
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'Something random',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        showcase: 'something'
+                    }
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder")
+                done();
+            });
+        });
+
+
+        describe("Bad Custom Parameters Json", function () {
+            before(function () {
+                // The ids are calculated based on the events used in the tests below so they must match exactly.
+                mParticle.forwarder.init({
+                    customParameters: 'sdpfuhasdflasdjfnsdjfsdjfn really baddd json',
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should not forward with bad custom parameters json', function (done) {
+
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'Something random',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        showcase: 'something'
+                    }
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder")
+                done();
+            });
         });
     });
 
-    describe("Page Event Conversion Label", function () {
-        before(function () {
+    describe('GTAG Conversions', function () {
+        describe('Initializing GTAG', function () {
+            it('should disable gtag and dataLayer by default', function (done) {
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') }]
 
-            var map = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" +  EventType.Navigation + 'Homepage') }]
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(map),
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
 
-            mParticle.forwarder.init({
-                labels: JSON.stringify(map),
-                conversionId: 'AW-123123123'
-            }, reportService.cb, 1, true);
-        });
-
-
-        it('should have conversion labels for page event', function (done) {
-
-            var successMessage = mParticle.forwarder.process({
-                EventName: 'Homepage',
-                EventDataType: MessageType.PageEvent,
-                EventCategory: EventType.Navigation,
-                EventAttributes: {
-                    showcase: 'something',
-                    test: 'thisoneshouldgetmapped',
-                    mp: 'rock'
-                }
+                (typeof window.gtag === 'undefined').should.be.true();
+                (typeof window.dataLayer === 'undefined').should.be.true();
+                done();
             });
 
-            successMessage.should.not.be.null();
-            successMessage.should.be.equal("Successfully sent to GoogleAdWords")
-            checkCommonProperties();
-            window.google_track_data.should.have.property('google_conversion_label', "pageEventLabel123");
+            it('should initialize gtag and dataLayer when user opts in', function (done) {
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') }]
 
-            done();
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(map),
+                    enableGtag: 'True',
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, 1, true);
+
+                window.gtag.should.be.ok();
+                window.dataLayer.should.be.ok();
+
+                done();
+            });
         });
+
+        describe("Page View Conversion Label", function () {
+            before(function () {
+                window.dataLayer = undefined;
+
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') }]
+
+                mParticle.forwarder.init({
+                    enableGtag: 'True',
+                    labels: JSON.stringify(map),
+                    conversionId: '123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should have conversion labels for page view', function (done) {
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageView,
+                    EventAttributes: {
+                        showcase: 'something',
+                        test: 'thisoneshouldgetmapped',
+                        mp: 'rock'
+                    }
+                });
+
+                var expectedDataLayer = [
+                    'event',
+                    'conversion',
+                    {
+                        'send-to': 'AW-123123123/pageViewLabel123'
+                    }
+                ];
+
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                window.dataLayer.should.match([expectedDataLayer]);
+
+                done();
+            });
+        });
+        describe("Page Event Conversion Label", function () {
+            before(function () {
+                window.dataLayer = undefined;
+
+                var map = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" +  EventType.Navigation + 'Homepage') }]
+
+                mParticle.forwarder.init({
+                    enableGtag: 'True',
+                    labels: JSON.stringify(map),
+                    conversionId: '123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should have conversion labels for page event', function (done) {
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageEvent,
+                    EventCategory: EventType.Navigation,
+                    EventAttributes: {
+                        showcase: 'something',
+                        test: 'thisoneshouldgetmapped',
+                        mp: 'rock'
+                    }
+                });
+
+                var expectedDataLayer = [
+                    'event',
+                    'conversion',
+                    {
+                        'send-to': 'AW-123123123/pageEventLabel123'
+                    }
+                ];
+
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                window.dataLayer.should.match([expectedDataLayer]);
+
+                done();
+            });
+        });
+
+
+        describe("Commerce Event Conversion Label", function () {
+            before(function () {
+                window.dataLayer = undefined;
+
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
+
+                mParticle.forwarder.init({
+                    enableGtag: 'True',
+                    labels: JSON.stringify(map),
+                    conversionId: '123123123'
+                }, reportService.cb, 1, true);
+            });
+
+            it('should have conversion labels for commerce event', function (done) {
+                var successMessage = mParticle.forwarder.process({
+                    EventName: "eCommerce - Purchase",
+                    EventDataType: MessageType.Commerce,
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1
+                            }
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: "USD"
+                });
+
+                var expectedDataLayer = [
+                    'event',
+                    'conversion',
+                    {
+                        'send-to': 'AW-123123123/commerceLabel123',
+                        order_id: 123,
+                        value: 450,
+                        currency: 'USD',
+                    }
+                ];
+
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                window.dataLayer.should.match([expectedDataLayer]);
+
+                done();
+            });
+        })
+
+        describe("Custom Parameters", function () {
+            before(function () {
+                window.dataLayer = undefined;
+
+                var labels = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') }]
+                var attr = [{ "maptype": "EventAttributeClass.Id", "value": "mycustomprop", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'attributekey') }]
+
+                mParticle.forwarder.init({
+                    enableGtag: 'True',
+                    labels: JSON.stringify(labels),
+                    customParameters: JSON.stringify(attr),
+                    conversionId: '123123123'
+                }, reportService.cb, 1, true);
+            });
+
+            it('should have custom params for page event', function (done) {
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageEvent,
+                    EventCategory: EventType.Navigation,
+                    EventAttributes: {
+                        attributekey: 'attributevalue'
+                    }
+                });
+
+                var expectedDataLayer = [
+                    'event',
+                    'conversion',
+                    {
+                        'send-to': 'AW-123123123/pageEventLabel123',
+                        mycustomprop: 'attributevalue'
+                    }
+                ];
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                window.dataLayer.should.match([expectedDataLayer]);
+
+                done();
+            });
+        });
+
+        describe("Unmapped conversion labels", function () {
+            before(function () {
+                window.dataLayer = undefined;
+
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
+
+                mParticle.forwarder.init({
+                    enableGtag: 'True',
+                    labels: JSON.stringify(map),
+                    conversionId: '123123123'
+                }, reportService.cb, 1, true);
+            });
+
+            it('should not forward unmapped events', function (done) {
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'Something random',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        showcase: 'something'
+                    }
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder")
+                done();
+            });
+        });
+
+
+        describe("Bad Label Json", function () {
+            before(function () {
+                window.dataLayer = undefined;
+
+                // The ids are calculated based on the events used in the tests below so they must match exactly.
+                mParticle.forwarder.init({
+                    enableGtag: 'True',
+                    labels: 'baaaaaddddddd json',
+                    conversionId: '123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should not forward with bad labels json', function (done) {
+
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'Something random',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        showcase: 'something'
+                    }
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder")
+                done();
+            });
+        });
+
+
+        describe("Bad Custom Parameters Json", function () {
+            before(function () {
+                window.dataLayer = undefined;
+
+                // The ids are calculated based on the events used in the tests below so they must match exactly.
+                mParticle.forwarder.init({
+                    enableGtag: 'True',
+                    customParameters: 'sdpfuhasdflasdjfnsdjfsdjfn really baddd json',
+                    conversionId: '123123123'
+                }, reportService.cb, 1, true);
+            });
+
+
+            it('should not forward with bad custom parameters json', function (done) {
+
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'Something random',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        showcase: 'something'
+                    }
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder")
+                done();
+            });
+        });
+
     });
-
-
-    describe("Commerce Event Conversion Label", function () {
-        before(function () {
-
-            var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
-
-            mParticle.forwarder.init({
-                labels: JSON.stringify(map),
-                conversionId: 'AW-123123123'
-            }, reportService.cb, 1, true);
-        });
-
-        it('should have conversion labels for commerce event', function (done) {
-            var successMessage = mParticle.forwarder.process({
-                EventName: "eCommerce - Purchase",
-                EventDataType: MessageType.Commerce,
-                ProductAction: {
-                    ProductActionType: ProductActionType.Purchase,
-                    ProductList: [
-                        {
-                            Sku: '12345',
-                            Name: 'iPhone 6',
-                            Category: 'Phones',
-                            Brand: 'iPhone',
-                            Variant: '6',
-                            Price: 400,
-                            CouponCode: null,
-                            Quantity: 1
-                        }
-                    ],
-                    TransactionId: 123,
-                    Affiliation: 'my-affiliation',
-                    TotalAmount: 450,
-                    TaxAmount: 40,
-                    ShippingAmount: 10,
-                },
-                CurrencyCode: "USD"
-            });
-
-            successMessage.should.not.be.null();
-            successMessage.should.be.equal("Successfully sent to GoogleAdWords")
-            checkCommonProperties();
-            window.google_track_data.should.have.property('google_conversion_label', "commerceLabel123");
-
-            done();
-        });
-    })
-
-    describe("Custom Parameters", function () {
-        before(function () {
-
-            var labels = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') }]
-            var attr = [{ "maptype": "EventAttributeClass.Id", "value": "mycustomprop", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'attributekey') }]
-
-            mParticle.forwarder.init({
-                labels: JSON.stringify(labels),
-                customParameters: JSON.stringify(attr),
-                conversionId: 'AW-123123123'
-            }, reportService.cb, 1, true);
-        });
-
-        it('should have custom params for page event', function (done) {
-
-            var successMessage = mParticle.forwarder.process({
-                EventName: 'Homepage',
-                EventDataType: MessageType.PageEvent,
-                EventCategory: EventType.Navigation,
-                EventAttributes: {
-                    attributekey: 'attributevalue'
-                }
-            });
-
-            successMessage.should.not.be.null();
-            successMessage.should.be.equal("Successfully sent to GoogleAdWords")
-            checkCommonProperties();
-            window.google_track_data.should.have.property('google_custom_params');
-            Object.keys(window.google_track_data.google_custom_params).length.should.be.equal(1);
-            window.google_track_data.google_custom_params.should.have.property('mycustomprop', 'attributevalue')
-            done();
-        });
-    });
-
-    describe("Unmapped conversion labels", function () {
-        before(function () {
-
-            var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
-
-            mParticle.forwarder.init({
-                labels: JSON.stringify(map),
-                conversionId: 'AW-123123123'
-            }, reportService.cb, 1, true);
-        });
-
-        it('should not forward unmapped events', function (done) {
-            var failMessage = mParticle.forwarder.process({
-                EventName: 'Something random',
-                EventDataType: MessageType.Commerce,
-                EventAttributes: {
-                    showcase: 'something'
-                }
-            });
-
-            failMessage.should.not.be.null();
-            failMessage.should.be.containEql("Can't send to forwarder")
-            done();
-        });
-    });
-
-
-    describe("Bad Label Json", function () {
-        before(function () {
-            // The ids are calculated based on the events used in the tests below so they must match exactly.
-            mParticle.forwarder.init({
-                labels: 'baaaaaddddddd json',
-                conversionId: 'AW-123123123'
-            }, reportService.cb, 1, true);
-        });
-
-
-        it('should not forward with bad labels json', function (done) {
-
-            var failMessage = mParticle.forwarder.process({
-                EventName: 'Something random',
-                EventDataType: MessageType.Commerce,
-                EventAttributes: {
-                    showcase: 'something'
-                }
-            });
-
-            failMessage.should.not.be.null();
-            failMessage.should.be.containEql("Can't send to forwarder")
-            done();
-        });
-    });
-
-
-    describe("Bad Custom Parameters Json", function () {
-        before(function () {
-            // The ids are calculated based on the events used in the tests below so they must match exactly.
-            mParticle.forwarder.init({
-                customParameters: 'sdpfuhasdflasdjfnsdjfsdjfn really baddd json',
-                conversionId: 'AW-123123123'
-            }, reportService.cb, 1, true);
-        });
-
-
-        it('should not forward with bad custom parameters json', function (done) {
-
-            var failMessage = mParticle.forwarder.process({
-                EventName: 'Something random',
-                EventDataType: MessageType.Commerce,
-                EventAttributes: {
-                    showcase: 'something'
-                }
-            });
-
-            failMessage.should.not.be.null();
-            failMessage.should.be.containEql("Can't send to forwarder")
-            done();
-        });
-    });
-
 });
