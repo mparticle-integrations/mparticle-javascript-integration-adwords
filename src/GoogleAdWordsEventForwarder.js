@@ -56,10 +56,13 @@
                         sendEventFunction = sendGtagEvent;
                         generateEventFunction = generateGtagEvent;
                         generateCommerceEvent = generateGtagCommerceEvent;
+
                     } else if (window.google_trackConversion) {
-                        sendEventFunction = sendLegacyEvent;
+                        // window.google_trackConversion is a legacy API and will be deprecated
+                        sendEventFunction = sendAdwordsEvent;
                         generateEventFunction = generateAdwordsEvent;
                         generateCommerceEvent = generateAdwordsCommerceEvent;
+
                     } else {
                         eventQueue.push({
                             action: processEvent,
@@ -217,17 +220,17 @@
             try {
                 gtag('event', 'conversion', payload);
             } catch (e) {
-                console.error('gtag is not available to send payload', payload);
+                console.error('gtag is not available to send payload: ', payload, e);
                 return false;
             }
             return true;
         }
 
-        function sendLegacyEvent(payload) {
+        function sendAdwordsEvent(payload) {
             try {
                 window.google_trackConversion(payload);
             } catch (e) {
-                console.error('google_trackConversion is not available to send payload', payload);
+                console.error('google_trackConversion is not available to send payload: ', payload, e);
                 return false;
             }
             return true;
@@ -387,18 +390,8 @@
             }
         }
 
-        function purgeQueue(queue) {
-            if (queue.length) {
-                queue.forEach(function (action, data) {
-                    action(data);
-                });
-                queue = [];
-            }
-        }
-
         this.init = initForwarder;
         this.process = processEvent;
-        this.purgeQueue = purgeQueue;
         this.processQueue = processQueue;
     };
 
