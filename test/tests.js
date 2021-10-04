@@ -656,7 +656,6 @@ describe('Adwords forwarder', function () {
                     'conversion',
                     {
                         'send-to': 'AW-123123123/pageViewLabel123',
-                        action: 'code',
                         title: 'my page title'
                     }
                 ];
@@ -706,7 +705,6 @@ describe('Adwords forwarder', function () {
                     'conversion',
                     {
                         'send-to': 'AW-123123123/commerceLabel123',
-                        action: 'code',
                         sale: 'seasonal sale'
                     }
                 ];
