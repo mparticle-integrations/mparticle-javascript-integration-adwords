@@ -124,7 +124,7 @@ describe('Adwords forwarder', function () {
                 mParticle.forwarder.init({
                     labels: JSON.stringify(map),
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
             });
 
 
@@ -156,7 +156,7 @@ describe('Adwords forwarder', function () {
                 mParticle.forwarder.init({
                     labels: JSON.stringify(map),
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
             });
 
 
@@ -191,7 +191,7 @@ describe('Adwords forwarder', function () {
                 mParticle.forwarder.init({
                     labels: JSON.stringify(map),
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
             });
 
             it('should have conversion labels for commerce event', function (done) {
@@ -233,14 +233,22 @@ describe('Adwords forwarder', function () {
         describe("Custom Parameters", function () {
             before(function () {
 
-                var labels = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') }]
-                var attr = [{ "maptype": "EventAttributeClass.Id", "value": "mycustomprop", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'attributekey') }]
+                var labels = [
+                    { "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') },
+                    { "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') },
+                    { "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") },
+                ];
+                var attr = [
+                    { "maptype": "EventAttributeClass.Id", "value": "mycustomprop", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'attributekey') },
+                    { "maptype": "EventAttributeClassDetails.Id", "value": "title", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'title') },
+                    { "maptype": "EventAttributeClassDetails.Id", "value": "sale", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + 'sale') }
+                ];
 
                 mParticle.forwarder.init({
                     labels: JSON.stringify(labels),
                     customParameters: JSON.stringify(attr),
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
             });
 
             it('should have custom params for page event', function (done) {
@@ -262,6 +270,65 @@ describe('Adwords forwarder', function () {
                 window.google_track_data.google_custom_params.should.have.property('mycustomprop', 'attributevalue')
                 done();
             });
+
+            it('should have custom params for page view', function (done) {
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageView,
+                    EventAttributes: {
+                        title: 'my page view'
+                    }
+                });
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                checkCommonProperties();
+                window.google_track_data.should.have.property('google_custom_params');
+                Object.keys(window.google_track_data.google_custom_params).length.should.be.equal(1);
+                window.google_track_data.google_custom_params.should.have.property('title', 'my page view');
+                done();
+            });
+
+            it('should have custom params for commerce events', function (done) {
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: "eCommerce - Purchase",
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        sale: 'seasonal sale'
+                    },
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1
+                            }
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: "USD"
+                });
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                checkCommonProperties();
+                window.google_track_data.should.have.property('google_custom_params');
+                Object.keys(window.google_track_data.google_custom_params).length.should.be.equal(1);
+                window.google_track_data.google_custom_params.should.have.property('sale', 'seasonal sale');
+                done();
+            });
         });
 
         describe("Unmapped conversion labels", function () {
@@ -272,7 +339,7 @@ describe('Adwords forwarder', function () {
                 mParticle.forwarder.init({
                     labels: JSON.stringify(map),
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
             });
 
             it('should not forward unmapped events', function (done) {
@@ -297,7 +364,7 @@ describe('Adwords forwarder', function () {
                 mParticle.forwarder.init({
                     labels: 'baaaaaddddddd json',
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
             });
 
 
@@ -324,7 +391,7 @@ describe('Adwords forwarder', function () {
                 mParticle.forwarder.init({
                     customParameters: 'sdpfuhasdflasdjfnsdjfsdjfn really baddd json',
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
             });
 
 
@@ -353,7 +420,7 @@ describe('Adwords forwarder', function () {
                 mParticle.forwarder.init({
                     labels: JSON.stringify(map),
                     conversionId: 'AW-123123123'
-                }, reportService.cb, 1, true);
+                }, reportService.cb, true, true);
 
                 (typeof window.gtag === 'undefined').should.be.true();
                 (typeof window.dataLayer === 'undefined').should.be.true();
@@ -417,6 +484,7 @@ describe('Adwords forwarder', function () {
                 done();
             });
         });
+
         describe("Page Event Conversion Label", function () {
             before(function () {
                 window.dataLayer = undefined;
@@ -526,8 +594,16 @@ describe('Adwords forwarder', function () {
             before(function () {
                 window.dataLayer = undefined;
 
-                var labels = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') }]
-                var attr = [{ "maptype": "EventAttributeClass.Id", "value": "mycustomprop", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'attributekey') }]
+                var labels = [
+                    { "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') },
+                    { "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') },
+                    { "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") },
+                ];
+                var attr = [
+                    { "maptype": "EventAttributeClass.Id", "value": "mycustomprop", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'attributekey') },
+                    { "maptype": "EventAttributeClassDetails.Id", "value": "title", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'title') },
+                    { "maptype": "EventAttributeClassDetails.Id", "value": "sale", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + 'sale') }
+                ]
 
                 mParticle.forwarder.init({
                     enableGtag: 'True',
@@ -560,6 +636,84 @@ describe('Adwords forwarder', function () {
                 successMessage.should.not.be.null();
                 successMessage.should.be.equal("Successfully sent to GoogleAdWords")
                 window.dataLayer.should.match([expectedDataLayer]);
+
+                done();
+            });
+
+            it('should have custom params for page view', function (done) {
+
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageView,
+                    EventAttributes: {
+                        title: 'my page title'
+                    }
+                });
+
+                var expectedDataLayer = [
+                    'event',
+                    'conversion',
+                    {
+                        'send-to': 'AW-123123123/pageViewLabel123',
+                        action: 'code',
+                        title: 'my page title'
+                    }
+                ];
+
+                // debugger;
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                window.dataLayer.should.matchAny(expectedDataLayer);
+
+                done();
+            });
+
+            it('should have custom params for commerce event', function (done) {
+
+                var successMessage = mParticle.forwarder.process({
+                    EventName: "eCommerce - Purchase",
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        sale: 'seasonal sale'
+                    },
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1
+                            }
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: "USD"
+                });
+
+                var expectedDataLayer = [
+                    'event',
+                    'conversion',
+                    {
+                        'send-to': 'AW-123123123/commerceLabel123',
+                        action: 'code',
+                        sale: 'seasonal sale'
+                    }
+                ];
+
+                successMessage.should.not.be.null();
+                successMessage.should.be.equal("Successfully sent to GoogleAdWords")
+                window.dataLayer.should.matchAny(expectedDataLayer);
 
                 done();
             });
