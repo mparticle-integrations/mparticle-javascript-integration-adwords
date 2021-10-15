@@ -185,20 +185,26 @@
         }
 
         // gtag Events
-        function generateGtagEvent(mPEvent, conversionLabel, customProps) {
-            var conversionPayload = {
-                'send-to': gtagSiteId + '/' + conversionLabel
-            };
+        function getBaseGtagEvent(conversionLabel) {
+            return {
+                'send-to': gtagSiteId + '/' + conversionLabel,
+                'value': 0,
+                'language': 'en',
+                'remarketing_only': forwarderSettings.remarketingOnly == 'True'
+            }
+        }
 
+        function generateGtagEvent(mPEvent, conversionLabel, customProps) {
+            if (!conversionLabel) { return };
+
+            var conversionPayload = getBaseGtagEvent(conversionLabel);
             return mergeObjects(conversionPayload, customProps);
         }
 
         function generateGtagCommerceEvent(mPEvent, conversionLabel, customProps) {
-            var conversionPayload = {
-                'send-to': gtagSiteId + '/' + conversionLabel
-            };
+            if (!conversionLabel) { return };
 
-            var customProps = getCustomProps(mPEvent, isPageEvent);
+            var conversionPayload = getBaseGtagEvent(conversionLabel);
 
             if (mPEvent.ProductAction.ProductActionType === mParticle.ProductActionType.Purchase
                 && mPEvent.ProductAction.TransactionId) {

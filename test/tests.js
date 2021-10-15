@@ -705,7 +705,11 @@ describe('Adwords forwarder', function () {
                     'conversion',
                     {
                         'send-to': 'AW-123123123/commerceLabel123',
-                        sale: 'seasonal sale'
+                        currency: 'USD',
+                        language: 'en',
+                        remarketing_only: false,
+                        sale: 'seasonal sale',
+                        value: 450
                     }
                 ];
 
@@ -739,8 +743,11 @@ describe('Adwords forwarder', function () {
                     }
                 });
 
+                // debugger;
+
                 failMessage.should.not.be.null();
                 failMessage.should.be.containEql("Can't send to forwarder")
+                window.dataLayer.length.should.eql(0)
                 done();
             });
         });
@@ -771,6 +778,7 @@ describe('Adwords forwarder', function () {
 
                 failMessage.should.not.be.null();
                 failMessage.should.be.containEql("Can't send to forwarder")
+                window.dataLayer.length.should.eql(0)
                 done();
             });
         });
