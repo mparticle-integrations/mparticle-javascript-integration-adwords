@@ -109,18 +109,6 @@
             return 'Can\'t send to forwarder ' + name + ', not initialized. Event added to queue.';
         }
 
-        // Converts an mParticle Event into either Legacy or gtag Event
-        function generateEvent(mPEvent, conversionLabel, isPageEvent) {
-            if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                return generateGtagEvent(mPEvent, conversionLabel, isPageEvent);
-            } else if (window.google_trackConversion) {
-                return generateAdwordsEvent(mPEvent, conversionLabel, isPageEvent);
-            } else {
-                console.error('Unrecognized Event', mPEvent);
-                return false;
-            }
-        }
-
         // Converts an mParticle Commerce Event into either Legacy or gtag Event
         function generateCommerceEvent(mPEvent, conversionLabel, isPageEvent) {
             if (mPEvent.ProductAction
@@ -195,14 +183,14 @@
         }
 
         function generateGtagEvent(mPEvent, conversionLabel, customProps) {
-            if (!conversionLabel) { return };
+            if (!conversionLabel) { return null; };
 
             var conversionPayload = getBaseGtagEvent(conversionLabel);
             return mergeObjects(conversionPayload, customProps);
         }
 
         function generateGtagCommerceEvent(mPEvent, conversionLabel, customProps) {
-            if (!conversionLabel) { return };
+            if (!conversionLabel) { return null; };
 
             var conversionPayload = getBaseGtagEvent(conversionLabel);
 

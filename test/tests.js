@@ -660,8 +660,6 @@ describe('Adwords forwarder', function () {
                     }
                 ];
 
-                // debugger;
-
                 successMessage.should.not.be.null();
                 successMessage.should.be.equal("Successfully sent to GoogleAdWords")
                 window.dataLayer.should.matchAny(expectedDataLayer);
