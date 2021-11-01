@@ -345,10 +345,10 @@ describe('Adwords forwarder', function () {
             it('should not forward unmapped events', function (done) {
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
-                    EventDataType: MessageType.Commerce,
+                    EventDataType: MessageType.PageEvent,
                     EventAttributes: {
-                        showcase: 'something'
-                    }
+                        showcase: 'something',
+                    },
                 });
 
                 failMessage.should.not.be.null();
@@ -735,13 +735,11 @@ describe('Adwords forwarder', function () {
             it('should not forward unmapped events', function (done) {
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
-                    EventDataType: MessageType.Commerce,
+                    EventDataType: MessageType.PageEvent,
                     EventAttributes: {
                         showcase: 'something'
                     }
                 });
-
-                // debugger;
 
                 failMessage.should.not.be.null();
                 failMessage.should.be.containEql("Can't send to forwarder")
