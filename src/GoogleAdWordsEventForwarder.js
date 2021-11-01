@@ -177,7 +177,7 @@
         // gtag Events
         function getBaseGtagEvent(conversionLabel) {
             return {
-                'send-to': gtagSiteId + '/' + conversionLabel,
+                'send_to': gtagSiteId + '/' + conversionLabel,
                 'value': 0,
                 'language': 'en',
                 'remarketing_only': forwarderSettings.remarketingOnly == 'True'

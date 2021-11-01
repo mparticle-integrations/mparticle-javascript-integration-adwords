@@ -472,7 +472,7 @@ describe('Adwords forwarder', function () {
                     'event',
                     'conversion',
                     {
-                        'send-to': 'AW-123123123/pageViewLabel123'
+                        'send_to': 'AW-123123123/pageViewLabel123'
                     }
                 ];
 
@@ -516,7 +516,7 @@ describe('Adwords forwarder', function () {
                     'event',
                     'conversion',
                     {
-                        'send-to': 'AW-123123123/pageEventLabel123'
+                        'send_to': 'AW-123123123/pageEventLabel123'
                     }
                 ];
 
@@ -574,7 +574,7 @@ describe('Adwords forwarder', function () {
                     'event',
                     'conversion',
                     {
-                        'send-to': 'AW-123123123/commerceLabel123',
+                        'send_to': 'AW-123123123/commerceLabel123',
                         order_id: 123,
                         value: 450,
                         currency: 'USD',
@@ -628,7 +628,7 @@ describe('Adwords forwarder', function () {
                     'event',
                     'conversion',
                     {
-                        'send-to': 'AW-123123123/pageEventLabel123',
+                        'send_to': 'AW-123123123/pageEventLabel123',
                         mycustomprop: 'attributevalue'
                     }
                 ];
@@ -655,7 +655,7 @@ describe('Adwords forwarder', function () {
                     'event',
                     'conversion',
                     {
-                        'send-to': 'AW-123123123/pageViewLabel123',
+                        'send_to': 'AW-123123123/pageViewLabel123',
                         title: 'my page title'
                     }
                 ];
@@ -702,7 +702,7 @@ describe('Adwords forwarder', function () {
                     'event',
                     'conversion',
                     {
-                        'send-to': 'AW-123123123/commerceLabel123',
+                        'send_to': 'AW-123123123/commerceLabel123',
                         currency: 'USD',
                         language: 'en',
                         remarketing_only: false,
