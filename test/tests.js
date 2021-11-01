@@ -335,9 +335,20 @@ describe('Adwords forwarder', function () {
                     labels: JSON.stringify(map),
                     conversionId: 'AW-123123123'
                 }, reportService.cb, true, true);
+            });before(function () {
+                var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
+
+                mParticle.forwarder.init({
+                    labels: JSON.stringify(map),
+                    conversionId: 'AW-123123123'
+                }, reportService.cb, true, true);
             });
 
-            it('should not forward unmapped events', function (done) {
+            beforeEach(function() {
+                window.dataLayer = [];
+            });
+
+            it('should not forward unmapped custom events', function (done) {
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
                     EventDataType: MessageType.PageEvent,
@@ -348,6 +359,42 @@ describe('Adwords forwarder', function () {
 
                 failMessage.should.not.be.null();
                 failMessage.should.be.containEql("Can't send to forwarder")
+                done();
+            });
+
+            it('should not forward unmapped ecommerce events', function(done) {
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'eCommerce - AddToCart',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        sale: 'seasonal sale',
+                    },
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1,
+                            },
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: 'USD',
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder");
+                window.dataLayer.length.should.eql(0);
                 done();
             });
         });
@@ -487,6 +534,10 @@ describe('Adwords forwarder', function () {
                 }, reportService.cb, 1, true);
             });
 
+            beforeEach(function() {
+                window.dataLayer = [];
+            });
+
             it('should have conversion labels for page event', function (done) {
                 var successMessage = mParticle.forwarder.process({
                     EventName: 'Homepage',
@@ -509,7 +560,7 @@ describe('Adwords forwarder', function () {
 
                 successMessage.should.not.be.null();
                 successMessage.should.be.equal("Successfully sent to GoogleAdWords")
-                window.dataLayer[1].should.match(result);
+                window.dataLayer[0].should.match(result);
 
                 done();
             });
@@ -732,6 +783,42 @@ describe('Adwords forwarder', function () {
                 failMessage.should.not.be.null();
                 failMessage.should.be.containEql("Can't send to forwarder")
                 window.dataLayer.length.should.eql(0)
+                done();
+            });
+
+            it('should not forward unmapped ecommerce events', function(done) {
+                var failMessage = mParticle.forwarder.process({
+                    EventName: 'eCommerce - AddToCart',
+                    EventDataType: MessageType.Commerce,
+                    EventAttributes: {
+                        sale: 'seasonal sale',
+                    },
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1,
+                            },
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: 'USD',
+                });
+
+                failMessage.should.not.be.null();
+                failMessage.should.be.containEql("Can't send to forwarder");
+                window.dataLayer.length.should.eql(0);
                 done();
             });
         });
