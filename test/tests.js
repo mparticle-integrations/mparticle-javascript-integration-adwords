@@ -119,9 +119,9 @@ describe('Adwords forwarder', function () {
         beforeEach(function() {
             window.dataLayer = undefined;
         });
+
         describe("Page View Conversion Label", function () {
             before(function () {
-
                 var map = [{ "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') }]
 
                 mParticle.forwarder.init({
@@ -163,7 +163,6 @@ describe('Adwords forwarder', function () {
 
 
             it('should have conversion labels for page event', function (done) {
-
                 var successMessage = mParticle.forwarder.process({
                     EventName: 'Homepage',
                     EventDataType: MessageType.PageEvent,
@@ -187,7 +186,6 @@ describe('Adwords forwarder', function () {
 
         describe("Commerce Event Conversion Label", function () {
             before(function () {
-
                 var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
 
                 mParticle.forwarder.init({
@@ -234,7 +232,6 @@ describe('Adwords forwarder', function () {
 
         describe("Custom Parameters", function () {
             before(function () {
-
                 var labels = [
                     { "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" + EventType.Navigation + 'Homepage') },
                     { "maptype": "EventClassDetails.Id", "value": "pageViewLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageView + "" + 'Homepage') },
@@ -254,7 +251,6 @@ describe('Adwords forwarder', function () {
             });
 
             it('should have custom params for page event', function (done) {
-
                 var successMessage = mParticle.forwarder.process({
                     EventName: 'Homepage',
                     EventDataType: MessageType.PageEvent,
@@ -274,7 +270,6 @@ describe('Adwords forwarder', function () {
             });
 
             it('should have custom params for page view', function (done) {
-
                 var successMessage = mParticle.forwarder.process({
                     EventName: 'Homepage',
                     EventDataType: MessageType.PageView,
@@ -293,7 +288,6 @@ describe('Adwords forwarder', function () {
             });
 
             it('should have custom params for commerce events', function (done) {
-
                 var successMessage = mParticle.forwarder.process({
                     EventName: "eCommerce - Purchase",
                     EventDataType: MessageType.Commerce,
@@ -335,7 +329,6 @@ describe('Adwords forwarder', function () {
 
         describe("Unmapped conversion labels", function () {
             before(function () {
-
                 var map = [{ "maptype": "EventClassDetails.Id", "value": "commerceLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.Commerce + "" + "eCommerce - Purchase") }]
 
                 mParticle.forwarder.init({
@@ -359,7 +352,6 @@ describe('Adwords forwarder', function () {
             });
         });
 
-
         describe("Bad Label Json", function () {
             before(function () {
                 // The ids are calculated based on the events used in the tests below so they must match exactly.
@@ -371,10 +363,9 @@ describe('Adwords forwarder', function () {
 
 
             it('should not forward with bad labels json', function (done) {
-
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
-                    EventDataType: MessageType.Commerce,
+                    EventDataType: MessageType.PageEvent,
                     EventAttributes: {
                         showcase: 'something'
                     }
@@ -398,10 +389,9 @@ describe('Adwords forwarder', function () {
 
 
             it('should not forward with bad custom parameters json', function (done) {
-
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
-                    EventDataType: MessageType.Commerce,
+                    EventDataType: MessageType.PageEvent,
                     EventAttributes: {
                         showcase: 'something'
                     }
@@ -478,7 +468,6 @@ describe('Adwords forwarder', function () {
                     }
                 ];
 
-
                 successMessage.should.not.be.null();
                 successMessage.should.be.equal("Successfully sent to GoogleAdWords")
                 window.dataLayer[1].should.match(result);
@@ -489,8 +478,6 @@ describe('Adwords forwarder', function () {
 
         describe("Page Event Conversion Label", function () {
             before(function () {
-                window.dataLayer = undefined;
-
                 var map = [{ "maptype": "EventClass.Id", "value": "pageEventLabel123", "map": "0", "jsmap": mParticle.generateHash(MessageType.PageEvent + "" +  EventType.Navigation + 'Homepage') }]
 
                 mParticle.forwarder.init({
@@ -500,9 +487,7 @@ describe('Adwords forwarder', function () {
                 }, reportService.cb, 1, true);
             });
 
-
             it('should have conversion labels for page event', function (done) {
-
                 var successMessage = mParticle.forwarder.process({
                     EventName: 'Homepage',
                     EventDataType: MessageType.PageEvent,
@@ -522,7 +507,6 @@ describe('Adwords forwarder', function () {
                     }
                 ];
 
-
                 successMessage.should.not.be.null();
                 successMessage.should.be.equal("Successfully sent to GoogleAdWords")
                 window.dataLayer[1].should.match(result);
@@ -530,7 +514,6 @@ describe('Adwords forwarder', function () {
                 done();
             });
         });
-
 
         describe("Commerce Event Conversion Label", function () {
             before(function () {
@@ -583,7 +566,6 @@ describe('Adwords forwarder', function () {
                     }
                 ];
 
-
                 successMessage.should.not.be.null();
                 successMessage.should.be.equal("Successfully sent to GoogleAdWords")
                 window.dataLayer[1].should.match(result);
@@ -614,7 +596,8 @@ describe('Adwords forwarder', function () {
                     conversionId: '123123123'
                 }, reportService.cb, 1, true);
             });
-            this.afterEach(function() {
+
+            afterEach(function() {
                 window.dataLayer = [];
             });
 
@@ -737,7 +720,7 @@ describe('Adwords forwarder', function () {
                 window.dataLayer = [];
             })
 
-            it('should not forward unmapped events', function (done) {
+            it('should not forward unmapped custom events', function (done) {
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
                     EventDataType: MessageType.PageEvent,
@@ -752,7 +735,6 @@ describe('Adwords forwarder', function () {
                 done();
             });
         });
-
 
         describe("Bad Label Json", function () {
             before(function () {
@@ -769,10 +751,9 @@ describe('Adwords forwarder', function () {
             });
 
             it('should not forward with bad labels json', function (done) {
-
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
-                    EventDataType: MessageType.Commerce,
+                    EventDataType: MessageType.PageEvent,
                     EventAttributes: {
                         showcase: 'something'
                     }
@@ -801,10 +782,9 @@ describe('Adwords forwarder', function () {
 
 
             it('should not forward with bad custom parameters json', function (done) {
-
                 var failMessage = mParticle.forwarder.process({
                     EventName: 'Something random',
-                    EventDataType: MessageType.Commerce,
+                    EventDataType: MessageType.PageEvent,
                     EventAttributes: {
                         showcase: 'something'
                     }
