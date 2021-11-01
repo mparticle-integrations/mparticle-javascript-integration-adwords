@@ -611,7 +611,7 @@ describe('Adwords forwarder', function () {
                     'conversion',
                     {
                         'send_to': 'AW-123123123/commerceLabel123',
-                        order_id: 123,
+                        transaction_id: 123,
                         value: 450,
                         currency: 'USD',
                     }
@@ -659,16 +659,18 @@ describe('Adwords forwarder', function () {
                     EventCategory: EventType.Navigation,
                     EventAttributes: {
                         attributekey: 'attributevalue'
-                    }
+                    },
+                    SourceMessageId: 'foo-bar'
                 });
 
                 var result = [
                     'event',
                     'conversion',
                     {
-                        'send_to': 'AW-123123123/pageEventLabel123',
-                        mycustomprop: 'attributevalue'
-                    }
+                        send_to: 'AW-123123123/pageEventLabel123',
+                        mycustomprop: 'attributevalue',
+                        transaction_id: 'foo-bar',
+                    },
                 ];
 
                 successMessage.should.not.be.null();

@@ -28,7 +28,6 @@
         },
         ENHANCED_CONVERSION_DATA = "GoogleAds.ECData";
 
-
     var constructor = function () {
         var self = this,
             isInitialized = false,
@@ -220,6 +219,7 @@
             if (!conversionLabel) { return null; };
 
             var conversionPayload = getBaseGtagEvent(conversionLabel);
+            conversionPayload.transaction_id = mPEvent.SourceMessageId;
             return mergeObjects(conversionPayload, customProps);
         }
 
@@ -230,7 +230,9 @@
 
             if (mPEvent.ProductAction.ProductActionType === mParticle.ProductActionType.Purchase
                 && mPEvent.ProductAction.TransactionId) {
-                conversionPayload.order_id = mPEvent.ProductAction.TransactionId;
+                conversionPayload.transaction_id = mPEvent.ProductAction.TransactionId;
+            } else {
+                conversionPayload.transaction_id = mPEvent.SourceMessageId;
             }
 
             if (mPEvent.CurrencyCode) {
