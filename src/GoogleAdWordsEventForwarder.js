@@ -346,7 +346,6 @@
                 };
                 gTagScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + gtagSiteId;
                 document.getElementsByTagName('head')[0].appendChild(gTagScript);
-                gtag()
             })();
         }
 
