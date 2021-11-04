@@ -19,7 +19,7 @@ jobs:
         runs-on: ubuntu-18.04
         needs: confirm-public-repo-master-branch
         steps:
-            - name: Checkout internal development branch
+            - name: Checkout development branch
               uses: actions/checkout@v2
               with:
                   ref: development
@@ -56,6 +56,11 @@ jobs:
             - name: Run tests
               run: npm run test
 
+            - name: Curl release.config.js and bundle-and-commit.sh
+              run: |
+                  curl "https://raw.githubusercontent.com/rmi22186/workflows/master/web-kits/release.config.js" > release.config.js || exit 1
+                  curl "https://raw.githubusercontent.com/rmi22186/workflows/master/web-kits/generate-bundle-and-commit.sh" > generate-bundle-and-commit.sh || exit 1
+
             - name: Release --dry-run
               if: ${{ github.event.inputs.dryRun == 'true'}}
               env:
@@ -82,11 +87,11 @@ jobs:
                   -p @semantic-release/git@9 \
                   -p @semantic-release/exec@5 \
                   semantic-release
-            - name: Push automated release commits to internal release branch
+            - name: Push automated release commits to release branch
               if: ${{ github.event.inputs.dryRun == 'false' }}
               run: |
                   git status
-                  git push internal HEAD:release/${{ github.run_number }}
+                  git push origin HEAD:release/${{ github.run_number }}
     sync-repository:
         name: Sync development and master branches
         needs: release
@@ -109,7 +114,7 @@ jobs:
               run: |
                   git push origin HEAD:master
                   git push origin HEAD:development
-            - name: Delete internal release branch
+            - name: Delete release branch
               if: ${{ github.event.inputs.dryRun == 'false' }}
               run: |
                   git push --delete origin release/${{ github.run_number }}
