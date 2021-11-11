@@ -1,3 +1,11 @@
+## [2.1.1](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.1.0...v2.1.1) (2021-11-11)
+
+
+### Bug Fixes
+
+* Correct send_to in gtag API ([#23](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/issues/23)) ([af01adc](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/af01adc2b04453f77845e228bff4aa6c49824fde))
+* Prevent unmapped events from being forwarded ([#22](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/issues/22)) ([50e6d27](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/50e6d279dff666f5621e585878672707a21d911f))
+
 ## Releases
 --
 
