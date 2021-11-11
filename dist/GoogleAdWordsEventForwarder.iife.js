@@ -26,8 +26,8 @@ var mpAdWordsKit = (function (exports) {
                 CrashReport: 5,
                 OptOut: 6,
                 Commerce: 16
-            };
-
+            },
+            ENHANCED_CONVERSION_DATA = "GoogleAds.ECData";
 
         var constructor = function () {
             var self = this,
@@ -54,6 +54,19 @@ var mpAdWordsKit = (function (exports) {
 
                     try {
                         if (window.gtag && forwarderSettings.enableGtag == 'True') {
+                            if (event.CustomFlags && 
+                                Object.keys(event.CustomFlags).length &&
+                                event.CustomFlags[ENHANCED_CONVERSION_DATA]
+                            ) {
+                                if (forwarderSettings.enableEnhancedConversions === 'True') {
+                                    setEnhancedConversionData(
+                                        event.CustomFlags[ENHANCED_CONVERSION_DATA]
+                                    );
+                                } else {
+                                    console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
+                                }
+                            }
+
                             sendEventFunction = sendGtagEvent;
                             generateEventFunction = generateGtagEvent;
                             generateCommerceEvent = generateGtagCommerceEvent;
@@ -112,6 +125,25 @@ var mpAdWordsKit = (function (exports) {
                 return 'Can\'t send to forwarder ' + name + ', not initialized. Event added to queue.';
             }
 
+            function setEnhancedConversionData(enhancedConversionData) {
+                if (enhancedConversionData.email) {
+                    window.enhanced_conversion_data.email = enhancedConversionData.email;
+                }
+                if (enhancedConversionData.phone_number) {
+                    window.enhanced_conversion_data.phone_number = enhancedConversionData.phone_number;
+                }
+                if (enhancedConversionData.first_name) {
+                    window.enhanced_conversion_data.first_name = enhancedConversionData.first_name;
+                }
+                if (enhancedConversionData.last_name) {
+                    window.enhanced_conversion_data.last_name = enhancedConversionData.last_name;
+                }
+                if (enhancedConversionData.home_address) {
+                    window.enhanced_conversion_data.home_address =
+                        enhancedConversionData.home_address;
+                }
+            }
+
             // Converts an mParticle Commerce Event into either Legacy or gtag Event
             function generateCommerceEvent(mPEvent, conversionLabel, isPageEvent) {
                 if (mPEvent.ProductAction
@@ -134,7 +166,6 @@ var mpAdWordsKit = (function (exports) {
 
 
             // ** Adwords Events
-
             function getBaseAdWordEvent() {
                 var adWordEvent = {};
                 adWordEvent.google_conversion_value = 0;
@@ -188,6 +219,7 @@ var mpAdWordsKit = (function (exports) {
             function generateGtagEvent(mPEvent, conversionLabel, customProps) {
                 if (!conversionLabel) { return null; }
                 var conversionPayload = getBaseGtagEvent(conversionLabel);
+                conversionPayload.transaction_id = mPEvent.SourceMessageId;
                 return mergeObjects(conversionPayload, customProps);
             }
 
@@ -197,7 +229,9 @@ var mpAdWordsKit = (function (exports) {
 
                 if (mPEvent.ProductAction.ProductActionType === mParticle.ProductActionType.Purchase
                     && mPEvent.ProductAction.TransactionId) {
-                    conversionPayload.order_id = mPEvent.ProductAction.TransactionId;
+                    conversionPayload.transaction_id = mPEvent.ProductAction.TransactionId;
+                } else {
+                    conversionPayload.transaction_id = mPEvent.SourceMessageId;
                 }
 
                 if (mPEvent.CurrencyCode) {
@@ -299,7 +333,13 @@ var mpAdWordsKit = (function (exports) {
                     gTagScript.async = true;
                     gTagScript.onload = function () {
                         gtag('js', new Date());
-                        gtag('config', gtagSiteId);
+                        if (forwarderSettings.enableEnhancedConversions === 'True') {
+                            gtag('config', gtagSiteId, {
+                                allow_enhanced_conversions: true
+                            });
+                        } else {
+                            gtag('config', gtagSiteId);
+                        }
                         isInitialized = true;
                         processQueue(eventQueue);
                     };
@@ -323,7 +363,7 @@ var mpAdWordsKit = (function (exports) {
             }
 
             function initForwarder(settings, service, testMode) {
-
+                window.enhanced_conversion_data = {};
                 forwarderSettings = settings;
                 reportingService = service;
 
