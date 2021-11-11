@@ -77,21 +77,23 @@ var mpAdWordsKit = (function (exports) {
                         var conversionLabel = getConversionLabel(event);
                         var customProps = getCustomProps(event);
 
-                        // Determines the proper event to fire
-                        if (event.EventDataType == MessageType.PageView || event.EventDataType == MessageType.PageEvent) {
-                            eventPayload = generateEventFunction(event, conversionLabel, customProps);
-                        } else if (event.EventDataType == MessageType.Commerce && event.ProductAction) {
-                            eventPayload = generateCommerceEvent(event, conversionLabel, customProps);
-                        }
-
-                        if (eventPayload) {
-                           reportEvent = sendEventFunction(eventPayload);
-                        }
-
-                        if (reportEvent && reportingService) {
-                            reportingService(self, event);
-
-                            return 'Successfully sent to ' + name;
+                        if (conversionLabel) {
+                            // Determines the proper event to fire
+                            if (event.EventDataType == MessageType.PageView || event.EventDataType == MessageType.PageEvent) {
+                                eventPayload = generateEventFunction(event, conversionLabel, customProps);
+                            } else if (event.EventDataType == MessageType.Commerce && event.ProductAction) {
+                                eventPayload = generateCommerceEvent(event, conversionLabel, customProps);
+                            }
+        
+                            if (eventPayload) {
+                               reportEvent = sendEventFunction(eventPayload);
+                            }
+        
+                            if (reportEvent && reportingService) {
+                                reportingService(self, event);
+        
+                                return 'Successfully sent to ' + name;
+                            }
                         }
 
                         return 'Can\'t send to forwarder: ' + name + '. Event not mapped';
@@ -176,7 +178,7 @@ var mpAdWordsKit = (function (exports) {
             // gtag Events
             function getBaseGtagEvent(conversionLabel) {
                 return {
-                    'send-to': gtagSiteId + '/' + conversionLabel,
+                    'send_to': gtagSiteId + '/' + conversionLabel,
                     'value': 0,
                     'language': 'en',
                     'remarketing_only': forwarderSettings.remarketingOnly == 'True'
