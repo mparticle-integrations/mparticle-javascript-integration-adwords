@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.1.1...v2.2.0) (2021-11-11)
+
+
+### Features
+
+* Add support for enhanced conversions ([7c3c5d6](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/7c3c5d6092b0574c3f54ca5651c27a2b3d8edb4c))
+
 ## [2.1.1](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.1.0...v2.1.1) (2021-11-11)
 
 
