@@ -142,6 +142,7 @@ describe('Adwords forwarder', function () {
                     }
                 });
 
+                successMessage.should.be.eql('foo');
                 successMessage.should.not.be.null();
                 successMessage.should.be.equal("Successfully sent to GoogleAdWords")
                 checkCommonProperties();
