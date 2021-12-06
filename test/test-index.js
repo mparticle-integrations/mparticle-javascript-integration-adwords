@@ -5,6 +5,6 @@ window.mParticle.addForwarder = function(forwarder) {
     window.mParticle.forwarder = new forwarder.constructor();
 };
 
-require('../../dist/GoogleAdWordsEventForwarder.common.js');
-require('../mockhttprequest');
-require('../tests.js');
+require('../dist/GoogleAdWordsEventForwarder.common.js');
+require('./mockhttprequest');
+require('./tests.js');

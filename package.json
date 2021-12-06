@@ -12,8 +12,9 @@
     "scripts": {
         "build": "rollup --config rollup.config.js",
         "watch": "rollup --config rollup.config.js -w",
-        "test:old": "node test/boilerplate/test-karma.js",
-        "test": "browserify test/boilerplate/test-index.js -o test/test-bundle.js && karma start test/boilerplate/karma.config.js"
+        "test:bundle": "browserify test/test-index.js -o test/test-bundle.js",
+        "test:karma": "karma start test/karma.config.js",
+        "test": "npm run test:bundle && npm run test:karma"
     },
     "devDependencies": {
         "chai": "^4.2.0",
