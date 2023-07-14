@@ -58,9 +58,8 @@
                             event.CustomFlags[ENHANCED_CONVERSION_DATA]
                         ) {
                             if (forwarderSettings.enableEnhancedConversions === 'True') {
-                                setEnhancedConversionData(
-                                    event.CustomFlags[ENHANCED_CONVERSION_DATA]
-                                );
+                                const expandedCustomFlags = expandCustomFlags(event.CustomFlags[ENHANCED_CONVERSION_DATA]);
+                                setEnhancedConversionData(expandedCustomFlags);
                             } else {
                                 console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
                             }
@@ -142,6 +141,26 @@
                     enhancedConversionData.home_address;
             }
         }
+
+        function expandCustomFlags(customFlags) {
+            if (typeof customFlags === 'string') {
+                try {
+                    // TODO: Defend against bad formatting in custom flags
+                    // TODO: Make sure that parsed JSON contains an actual object
+                    const parsedCustomFlags = JSON.parse(customFlags);
+    
+                    return parsedCustomFlags;
+                } catch (error) {
+                    console.error('Unable to parse custom flags as string', error);
+
+                }
+            }
+            console.log('my custom flags', customFlags);
+            
+            // If we don't need to parse the custom flags, just return as is
+            return customFlags;
+        }
+
 
         // Converts an mParticle Commerce Event into either Legacy or gtag Event
         function generateCommerceEvent(mPEvent, conversionLabel, isPageEvent) {
