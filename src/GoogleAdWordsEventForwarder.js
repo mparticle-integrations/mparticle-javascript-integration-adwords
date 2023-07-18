@@ -42,6 +42,7 @@
 
         function processEvent(event) {
             var reportEvent = false;
+            var buildEnhancedConversionDataFunction = function () {};
             var sendEventFunction = function() {};
             var generateEventFunction = function () {};
             var conversionLabel;
@@ -53,17 +54,19 @@
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                        if (event.CustomFlags && 
-                            Object.keys(event.CustomFlags).length &&
-                            event.CustomFlags[ENHANCED_CONVERSION_DATA]
-                        ) {
-                            if (forwarderSettings.enableEnhancedConversions === 'True') {
-                                const expandedCustomFlags = expandCustomFlags(event.CustomFlags[ENHANCED_CONVERSION_DATA]);
-                                setEnhancedConversionData(expandedCustomFlags);
-                            } else {
-                                console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
-                            }
+                        if (hasEnhancedConversionData(event.CustomFlags)) {
+                            buildEnhancedConversionDataFunction = buildNestedEnhancedConversionData;
+                        } else if (hasStringEnhancedConversionData(event.CustomFlags)) {
+                            buildEnhancedConversionDataFunction = buildStringEnhancedConversionData;
+                        } else {
+                            console.warn('Unrecognized Custom Flags Format', event.CustomFlags);
                         }
+                        
+                        if (forwarderSettings.enableEnhancedConversions !== 'True') {
+                            console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
+                        }
+
+                        window.enhanced_conversion_data = buildEnhancedConversionDataFunction(event.CustomFlags);
 
                         sendEventFunction = sendGtagEvent;
                         generateEventFunction = generateGtagEvent;
@@ -123,6 +126,75 @@
             return 'Can\'t send to forwarder ' + name + ', not initialized. Event added to queue.';
         }
 
+        function buildNestedEnhancedConversionData(customFlags) {
+            const sanitizedConversionData = {};
+            const conversionData = customFlags[ENHANCED_CONVERSION_DATA];
+
+            if (conversionData.email) {
+                sanitizedConversionData.email = conversionData.email;
+            }
+            if (conversionData.phone_number) {
+                sanitizedConversionData.phone_number = conversionData.phone_number;
+            }
+            if (conversionData.first_name) {
+                sanitizedConversionData.first_name = conversionData.first_name;
+            }
+            if (conversionData.last_name) {
+                sanitizedConversionData.last_name = conversionData.last_name;
+            }
+            if (conversionData.home_address) {
+                sanitizedConversionData.home_address = conversionData.home_address;
+            }
+
+            return sanitizedConversionData;
+        }
+
+        function buildStringEnhancedConversionData(customFlags) {
+            const sanitizedConversionData = {};
+
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.email']) {
+                sanitizedConversionData.email = customFlags[ENHANCED_CONVERSION_DATA + '.email'];
+            }
+
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.phone_number']) {
+                sanitizedConversionData.phone_number = customFlags[ENHANCED_CONVERSION_DATA + '.phone_number'];
+            }
+
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.first_name']) {
+                sanitizedConversionData.first_name = customFlags[ENHANCED_CONVERSION_DATA + '.first_name'];
+            }
+
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.last_name']) {
+                sanitizedConversionData.last_name = customFlags[ENHANCED_CONVERSION_DATA + '.last_name'];
+            }
+
+            if(Object.keys(customFlags).toString().includes('.home_address')) {
+                sanitizedConversionData.home_address = {};
+
+                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street']) {
+                    sanitizedConversionData.home_address.street = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street'];
+                }
+
+                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city']) {
+                    sanitizedConversionData.home_address.city = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city'];
+                }
+
+                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region']) {
+                    sanitizedConversionData.home_address.region = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region'];
+                }
+
+                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code']) {
+                    sanitizedConversionData.home_address.postal_code = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code'];
+                }
+
+                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country']) {
+                    sanitizedConversionData.home_address.country = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country'];
+                }
+            }
+
+            return sanitizedConversionData;
+        }
+
         function setEnhancedConversionData(enhancedConversionData) {
             if (enhancedConversionData.email) {
                 window.enhanced_conversion_data.email = enhancedConversionData.email;
@@ -142,25 +214,18 @@
             }
         }
 
-        function expandCustomFlags(customFlags) {
-            if (typeof customFlags === 'string') {
-                try {
-                    // TODO: Defend against bad formatting in custom flags
-                    // TODO: Make sure that parsed JSON contains an actual object
-                    const parsedCustomFlags = JSON.parse(customFlags);
-    
-                    return parsedCustomFlags;
-                } catch (error) {
-                    console.error('Unable to parse custom flags as string', error);
-
-                }
-            }
-            console.log('my custom flags', customFlags);
-            
-            // If we don't need to parse the custom flags, just return as is
-            return customFlags;
+        function hasEnhancedConversionData(customFlags) {
+            return customFlags && Object.keys(customFlags).length && customFlags[ENHANCED_CONVERSION_DATA];
         }
 
+        function hasStringEnhancedConversionData(customFlags) {
+            if (customFlags && Object.keys(customFlags).length) {
+                return Object.keys(customFlags)
+                    .toString()
+                    .includes(ENHANCED_CONVERSION_DATA);
+            }
+            return false;
+        }
 
         // Converts an mParticle Commerce Event into either Legacy or gtag Event
         function generateCommerceEvent(mPEvent, conversionLabel, isPageEvent) {
