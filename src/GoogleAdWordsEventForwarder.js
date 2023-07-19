@@ -151,6 +151,7 @@
 
         function buildStringEnhancedConversionData(customFlags) {
             const sanitizedConversionData = {};
+            const home_address = {};
 
             if(customFlags[ENHANCED_CONVERSION_DATA + '.email']) {
                 sanitizedConversionData.email = customFlags[ENHANCED_CONVERSION_DATA + '.email'];
@@ -168,28 +169,28 @@
                 sanitizedConversionData.last_name = customFlags[ENHANCED_CONVERSION_DATA + '.last_name'];
             }
 
-            if(Object.keys(customFlags).toString().includes('.home_address')) {
-                sanitizedConversionData.home_address = {};
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street']) {
+                home_address.street = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street'];
+            }
 
-                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street']) {
-                    sanitizedConversionData.home_address.street = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street'];
-                }
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city']) {
+                home_address.city = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city'];
+            }
 
-                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city']) {
-                    sanitizedConversionData.home_address.city = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city'];
-                }
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region']) {
+                home_address.region = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region'];
+            }
 
-                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region']) {
-                    sanitizedConversionData.home_address.region = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region'];
-                }
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code']) {
+                home_address.postal_code = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code'];
+            }
 
-                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code']) {
-                    sanitizedConversionData.home_address.postal_code = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code'];
-                }
+            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country']) {
+                home_address.country = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country'];
+            }
 
-                if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country']) {
-                    sanitizedConversionData.home_address.country = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country'];
-                }
+            if (Object.keys(home_address).length) {
+                sanitizedConversionData.home_address = home_address;
             }
 
             return sanitizedConversionData;
