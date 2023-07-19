@@ -195,25 +195,6 @@
             return sanitizedConversionData;
         }
 
-        function setEnhancedConversionData(enhancedConversionData) {
-            if (enhancedConversionData.email) {
-                window.enhanced_conversion_data.email = enhancedConversionData.email;
-            }
-            if (enhancedConversionData.phone_number) {
-                window.enhanced_conversion_data.phone_number = enhancedConversionData.phone_number;
-            }
-            if (enhancedConversionData.first_name) {
-                window.enhanced_conversion_data.first_name = enhancedConversionData.first_name;
-            }
-            if (enhancedConversionData.last_name) {
-                window.enhanced_conversion_data.last_name = enhancedConversionData.last_name;
-            }
-            if (enhancedConversionData.home_address) {
-                window.enhanced_conversion_data.home_address =
-                    enhancedConversionData.home_address;
-            }
-        }
-
         function hasEnhancedConversionData(customFlags) {
             return customFlags && Object.keys(customFlags).length && customFlags[ENHANCED_CONVERSION_DATA];
         }
