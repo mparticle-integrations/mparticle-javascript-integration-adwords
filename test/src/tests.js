@@ -901,8 +901,8 @@ describe('Adwords forwarder', function () {
                 window.enhanced_conversion_data = {};
             })
 
-            it('should set enhanced conversion data on custom events', function(done) {
-                var successMessage = mParticle.forwarder.process({
+            it('should set enhanced conversion data as an object on custom events', function(done) {
+                mParticle.forwarder.process({
                     EventName: 'Homepage',
                     EventDataType: MessageType.PageEvent,
                     EventCategory: EventType.Navigation,
@@ -948,8 +948,51 @@ describe('Adwords forwarder', function () {
                 done();
             });
 
-            it('should set enhanced conversion data on commerce events', function(done) {
-                var successMessage = mParticle.forwarder.process({
+            it('should set enhanced conversion data as strings on custom events', function(done) {
+                mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageEvent,
+                    EventCategory: EventType.Navigation,
+                    CustomFlags: {
+                        'GoogleAds.ECData.email':'test@gmail.com',
+                        'GoogleAds.ECData.phone_number': '1-911-867-5309',
+                        'GoogleAds.ECData.first_name': 'John',
+                        'GoogleAds.ECData.last_name': 'Doe',
+                        'GoogleAds.ECData.home_address.street': '123 Main St',
+                        'GoogleAds.ECData.home_address.city': 'San Francisco',
+                        'GoogleAds.ECData.home_address.region': 'CA',
+                        'GoogleAds.ECData.home_address.postal_code': '12345',
+                        'GoogleAds.ECData.home_address.country': 'US',
+                    },
+                });
+
+                window.enhanced_conversion_data.email.should.equal(
+                    'test@gmail.com'
+                );
+                window.enhanced_conversion_data.phone_number.should.equal(
+                    '1-911-867-5309'
+                );
+                window.enhanced_conversion_data.first_name.should.equal('John');
+                window.enhanced_conversion_data.last_name.should.equal('Doe');
+                window.enhanced_conversion_data.home_address.street.should.equal(
+                    '123 Main St'
+                );
+                window.enhanced_conversion_data.home_address.city.should.equal(
+                    'San Francisco'
+                );
+                window.enhanced_conversion_data.home_address.region.should.equal(
+                    'CA'
+                );
+                window.enhanced_conversion_data.home_address.postal_code.should.equal(
+                    '12345'
+                );
+                window.enhanced_conversion_data.home_address.country.should.equal('US');
+
+                done();
+            });
+
+            it('should set enhanced conversion data as an object on commerce events', function(done) {
+                mParticle.forwarder.process({
                     EventName: 'eCommerce - Purchase',
                     EventDataType: MessageType.Commerce,
                     ProductAction: {
@@ -1015,11 +1058,31 @@ describe('Adwords forwarder', function () {
                 done();
             });
 
-            it('should accept stringified custom flags', function (done) {
+            it('should set enhanced conversion data as strings on commerce events', function(done) {
                 mParticle.forwarder.process({
-                    EventName: 'Homepage',
-                    EventDataType: MessageType.PageEvent,
-                    EventCategory: EventType.Navigation,
+                    EventName: 'eCommerce - Purchase',
+                    EventDataType: MessageType.Commerce,
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1,
+                            },
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: 'USD',
                     CustomFlags: {
                         'GoogleAds.ECData.email':'test@gmail.com',
                         'GoogleAds.ECData.phone_number': '1-911-867-5309',
@@ -1032,8 +1095,6 @@ describe('Adwords forwarder', function () {
                         'GoogleAds.ECData.home_address.country': 'US',
                     },
                 });
-
-                window.enhanced_conversion_data.should.have.property('email');
 
                 window.enhanced_conversion_data.email.should.equal(
                     'test@gmail.com'
@@ -1055,9 +1116,7 @@ describe('Adwords forwarder', function () {
                 window.enhanced_conversion_data.home_address.postal_code.should.equal(
                     '12345'
                 );
-                window.enhanced_conversion_data.home_address.country.should.equal(
-                    'US'
-                );
+                window.enhanced_conversion_data.home_address.country.should.equal('US');
 
                 done();
             });
