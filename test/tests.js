@@ -990,8 +990,9 @@ describe('Adwords forwarder', function () {
                     },
                 });
 
+                // TODO: Fix this failing test once tests run properly
                 window.enhanced_conversion_data.email.should.equal(
-                    'test@gmail.com'
+                    'FAIL-test@gmail.com'
                 );
                 window.enhanced_conversion_data.phone_number.should.equal(
                     '1-911-867-5309'
