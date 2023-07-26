@@ -20,7 +20,7 @@ jobs:
         needs: confirm-public-repo-master-branch
         steps:
             - name: Checkout development branch
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   ref: development
 
@@ -41,7 +41,7 @@ jobs:
 
         steps:
             - name: Checkout public master branch
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   fetch-depth: 0
                   ref: master
@@ -98,7 +98,7 @@ jobs:
         runs-on: ubuntu-18.04
         steps:
             - name: Checkout public master branch
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   fetch-depth: 0
                   token: ${{ secrets.MP_INTEGRATIONS_SEMANTIC_RELEASE_BOT }}
