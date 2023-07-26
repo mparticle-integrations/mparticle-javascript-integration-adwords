@@ -1,12 +1,33 @@
-module.exports = function(config) {
+const { DEBUG } = process.env || 'false';
+
+const files = [
+    '../node_modules/@mparticle/web-sdk/dist/mparticle.js',
+    '../node_modules/mocha/mocha.js',
+    '../node_modules/should/should.js',
+    'config.js',
+    '../dist/GoogleAdWordsEventForwarder.iife.js',
+    'lib/mockhttprequest.js',
+    './test-bundle.js',
+];
+
+let browsers = ['ChromeHeadless', 'FirefoxHeadless'];
+let singleRun = true;
+
+if (DEBUG === 'true') {
+    browsers = ['Chrome'];
+    singleRun = false;
+}
+
+module.exports = function (config) {
     config.set({
         frameworks: ['mocha', 'chai'],
-        files: ['./test-bundle.js'],
+        files,
         reporters: ['progress'],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
-        browsers: ['ChromeHeadless', 'FirefoxHeadless'],
+        browsers,
+        singleRun,
         autoWatch: false,
         singleRun: true,
         concurrency: Infinity,

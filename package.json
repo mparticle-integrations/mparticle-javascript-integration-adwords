@@ -11,10 +11,10 @@
     "repository": "https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords",
     "scripts": {
         "build": "rollup --config rollup.config.js",
+        "build:test": "rollup --config rollup.test.config.js",
         "watch": "rollup --config rollup.config.js -w",
-        "test:bundle": "browserify test/test-index.js -o test/test-bundle.js",
-        "test:karma": "karma start test/karma.config.js",
-        "test": "npm run test:bundle && npm run test:karma"
+        "test:karma": "DEBUG=false karma start test/karma.config.js",
+        "test": "npm run build && npm run build:test && npm run test:karma"
     },
     "devDependencies": {
         "chai": "^4.2.0",
