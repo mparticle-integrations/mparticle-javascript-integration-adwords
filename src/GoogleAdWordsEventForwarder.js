@@ -42,7 +42,6 @@
 
         function processEvent(event) {
             var reportEvent = false;
-            var buildEnhancedConversionDataFunction = function () {};
             var sendEventFunction = function() {};
             var generateEventFunction = function () {};
             var conversionLabel;
@@ -55,18 +54,13 @@
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
                         if (hasEnhancedConversionData(event.CustomFlags)) {
-                            buildEnhancedConversionDataFunction = buildNestedEnhancedConversionData;
-                        } else if (hasStringEnhancedConversionData(event.CustomFlags)) {
-                            buildEnhancedConversionDataFunction = buildStringEnhancedConversionData;
-                        } else {
-                            console.warn('Unrecognized Custom Flags Format', event.CustomFlags);
+                            if (forwarderSettings.enableEnhancedConversions === 'True') {
+                                const conversionData = parseEnhancedConversionData(event.CustomFlags[ENHANCED_CONVERSION_DATA]);
+                                window.enhanced_conversion_data = sanitizeEnhancedConversionData(conversionData);
+                            } else {
+                                console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
+                           }
                         }
-                        
-                        if (forwarderSettings.enableEnhancedConversions !== 'True') {
-                            console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
-                        }
-
-                        window.enhanced_conversion_data = buildEnhancedConversionDataFunction(event.CustomFlags);
 
                         sendEventFunction = sendGtagEvent;
                         generateEventFunction = generateGtagEvent;
@@ -126,10 +120,10 @@
             return 'Can\'t send to forwarder ' + name + ', not initialized. Event added to queue.';
         }
 
-        function buildNestedEnhancedConversionData(customFlags) {
+        function sanitizeEnhancedConversionData(conversionData) {
             const sanitizedConversionData = {};
-            const conversionData = customFlags[ENHANCED_CONVERSION_DATA];
 
+            // TODO: Can we use some sort of array of fields to use as a whitelist?
             if (conversionData.email) {
                 sanitizedConversionData.email = conversionData.email;
             }
@@ -149,64 +143,26 @@
             return sanitizedConversionData;
         }
 
-        function buildStringEnhancedConversionData(customFlags) {
-            const sanitizedConversionData = {};
-            const home_address = {};
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.email']) {
-                sanitizedConversionData.email = customFlags[ENHANCED_CONVERSION_DATA + '.email'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.phone_number']) {
-                sanitizedConversionData.phone_number = customFlags[ENHANCED_CONVERSION_DATA + '.phone_number'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.first_name']) {
-                sanitizedConversionData.first_name = customFlags[ENHANCED_CONVERSION_DATA + '.first_name'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.last_name']) {
-                sanitizedConversionData.last_name = customFlags[ENHANCED_CONVERSION_DATA + '.last_name'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street']) {
-                home_address.street = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.street'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city']) {
-                home_address.city = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.city'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region']) {
-                home_address.region = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.region'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code']) {
-                home_address.postal_code = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.postal_code'];
-            }
-
-            if(customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country']) {
-                home_address.country = customFlags[ENHANCED_CONVERSION_DATA + '.home_address.country'];
-            }
-
-            if (Object.keys(home_address).length) {
-                sanitizedConversionData.home_address = home_address;
-            }
-
-            return sanitizedConversionData;
-        }
-
         function hasEnhancedConversionData(customFlags) {
             return customFlags && Object.keys(customFlags).length && customFlags[ENHANCED_CONVERSION_DATA];
         }
 
-        function hasStringEnhancedConversionData(customFlags) {
-            if (customFlags && Object.keys(customFlags).length) {
-                return Object.keys(customFlags)
-                    .toString()
-                    .includes(ENHANCED_CONVERSION_DATA);
+        function parseEnhancedConversionData(conversionData) {
+            // Checks if conversion data in custom flags is a stringified object
+            // Conversion data should only be a stringified object or JSON
+            if (typeof conversionData === 'string') {
+                try {
+                    return JSON.parse(conversionData);
+                } catch (error) {
+                    console.warn('Unrecognized Enhanced Conversion Data Format', conversionData, error);
+                    return {};
+                }
+            } else {
+                // Not a string, no need to sanitize, but we should not
+                // mutate the original state
+                return cloneObject(conversionData);
             }
-            return false;
+
         }
 
         // Converts an mParticle Commerce Event into either Legacy or gtag Event
@@ -539,6 +495,10 @@
              }
         }
         return resObj;
+    }
+
+    function cloneObject(obj) {
+        return JSON.parse(JSON.stringify(obj));
     }
 
     if (typeof window !== 'undefined') {

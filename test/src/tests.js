@@ -954,15 +954,19 @@ describe('Adwords forwarder', function () {
                     EventDataType: MessageType.PageEvent,
                     EventCategory: EventType.Navigation,
                     CustomFlags: {
-                        'GoogleAds.ECData.email':'test@gmail.com',
-                        'GoogleAds.ECData.phone_number': '1-911-867-5309',
-                        'GoogleAds.ECData.first_name': 'John',
-                        'GoogleAds.ECData.last_name': 'Doe',
-                        'GoogleAds.ECData.home_address.street': '123 Main St',
-                        'GoogleAds.ECData.home_address.city': 'San Francisco',
-                        'GoogleAds.ECData.home_address.region': 'CA',
-                        'GoogleAds.ECData.home_address.postal_code': '12345',
-                        'GoogleAds.ECData.home_address.country': 'US',
+                        'GoogleAds.ECData': JSON.stringify({
+                            email: 'test@gmail.com',
+                            phone_number: '1-911-867-5309',
+                            first_name: 'John',
+                            last_name: 'Doe',
+                            home_address: {
+                                street: '123 Main St',
+                                city: 'San Francisco',
+                                region: 'CA',
+                                postal_code: '12345',
+                                country: 'US',
+                            },
+                        }),
                     },
                 });
 
@@ -1084,15 +1088,19 @@ describe('Adwords forwarder', function () {
                     },
                     CurrencyCode: 'USD',
                     CustomFlags: {
-                        'GoogleAds.ECData.email':'test@gmail.com',
-                        'GoogleAds.ECData.phone_number': '1-911-867-5309',
-                        'GoogleAds.ECData.first_name': 'John',
-                        'GoogleAds.ECData.last_name': 'Doe',
-                        'GoogleAds.ECData.home_address.street': '123 Main St',
-                        'GoogleAds.ECData.home_address.city': 'San Francisco',
-                        'GoogleAds.ECData.home_address.region': 'CA',
-                        'GoogleAds.ECData.home_address.postal_code': '12345',
-                        'GoogleAds.ECData.home_address.country': 'US',
+                        'GoogleAds.ECData': JSON.stringify({
+                            email: 'test@gmail.com',
+                            phone_number: '1-911-867-5309',
+                            first_name: 'John',
+                            last_name: 'Doe',
+                            home_address: {
+                                street: '123 Main St',
+                                city: 'San Francisco',
+                                region: 'CA',
+                                postal_code: '12345',
+                                country: 'US',
+                            },
+                        }),
                     },
                 });
 
