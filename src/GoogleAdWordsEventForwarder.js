@@ -123,22 +123,19 @@
         function sanitizeEnhancedConversionData(conversionData) {
             const sanitizedConversionData = {};
 
-            // TODO: Can we use some sort of array of fields to use as a whitelist?
-            if (conversionData.email) {
-                sanitizedConversionData.email = conversionData.email;
-            }
-            if (conversionData.phone_number) {
-                sanitizedConversionData.phone_number = conversionData.phone_number;
-            }
-            if (conversionData.first_name) {
-                sanitizedConversionData.first_name = conversionData.first_name;
-            }
-            if (conversionData.last_name) {
-                sanitizedConversionData.last_name = conversionData.last_name;
-            }
-            if (conversionData.home_address) {
-                sanitizedConversionData.home_address = conversionData.home_address;
-            }
+            const allowedKeys = [
+                'email',
+                'phone_number',
+                'first_name',
+                'last_name',
+                'home_address',
+            ];
+
+            allowedKeys.forEach(function (key) {
+                if(conversionData[key]) {
+                    sanitizedConversionData[key] = conversionData[key];
+                }
+            });
 
             return sanitizedConversionData;
         }
