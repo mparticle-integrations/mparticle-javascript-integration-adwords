@@ -1,3 +1,17 @@
+const GoogleECData = {
+    email: 'test@gmail.com',
+    phone_number: '1-911-867-5309',
+    first_name: 'John',
+    last_name: 'Doe',
+    home_address: {
+        street: '123 Main St',
+        city: 'San Francisco',
+        region: 'CA',
+        postal_code: '12345',
+        country: 'US',
+    },
+};
+
 describe('Adwords forwarder', function () {
     var MessageType = {
         SessionStart: 1,
@@ -901,25 +915,13 @@ describe('Adwords forwarder', function () {
                 window.enhanced_conversion_data = {};
             })
 
-            it('should set enhanced conversion data on custom events', function(done) {
-                var successMessage = mParticle.forwarder.process({
+            it('should set enhanced conversion data as an object on custom events', function(done) {
+                mParticle.forwarder.process({
                     EventName: 'Homepage',
                     EventDataType: MessageType.PageEvent,
                     EventCategory: EventType.Navigation,
                     CustomFlags: {
-                        'GoogleAds.ECData': {
-                            email: 'test@gmail.com',
-                            phone_number: '1-911-867-5309',
-                            first_name: 'John',
-                            last_name: 'Doe',
-                            home_address: {
-                                street: '123 Main St',
-                                city: 'San Francisco',
-                                region: 'CA',
-                                postal_code: '12345',
-                                country: 'US',
-                            },
-                        },
+                        'GoogleAds.ECData': GoogleECData 
                     },
                 });
 
@@ -948,45 +950,13 @@ describe('Adwords forwarder', function () {
                 done();
             });
 
-            it('should set enhanced conversion data on commerce events', function(done) {
-                var successMessage = mParticle.forwarder.process({
-                    EventName: 'eCommerce - Purchase',
-                    EventDataType: MessageType.Commerce,
-                    ProductAction: {
-                        ProductActionType: ProductActionType.Purchase,
-                        ProductList: [
-                            {
-                                Sku: '12345',
-                                Name: 'iPhone 6',
-                                Category: 'Phones',
-                                Brand: 'iPhone',
-                                Variant: '6',
-                                Price: 400,
-                                CouponCode: null,
-                                Quantity: 1,
-                            },
-                        ],
-                        TransactionId: 123,
-                        Affiliation: 'my-affiliation',
-                        TotalAmount: 450,
-                        TaxAmount: 40,
-                        ShippingAmount: 10,
-                    },
-                    CurrencyCode: 'USD',
+            it('should set enhanced conversion data as strings on custom events', function(done) {
+                mParticle.forwarder.process({
+                    EventName: 'Homepage',
+                    EventDataType: MessageType.PageEvent,
+                    EventCategory: EventType.Navigation,
                     CustomFlags: {
-                        'GoogleAds.ECData': {
-                            email: 'test@gmail.com',
-                            phone_number: '1-911-867-5309',
-                            first_name: 'John',
-                            last_name: 'Doe',
-                            home_address: {
-                                street: '123 Main St',
-                                city: 'San Francisco',
-                                region: 'CA',
-                                postal_code: '12345',
-                                country: 'US',
-                            },
-                        },
+                        'GoogleAds.ECData': JSON.stringify(GoogleECData),
                     },
                 });
 
@@ -1011,6 +981,151 @@ describe('Adwords forwarder', function () {
                     '12345'
                 );
                 window.enhanced_conversion_data.home_address.country.should.equal('US');
+
+                done();
+            });
+
+            it('should set enhanced conversion data as an object on commerce events', function(done) {
+                mParticle.forwarder.process({
+                    EventName: 'eCommerce - Purchase',
+                    EventDataType: MessageType.Commerce,
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1,
+                            },
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: 'USD',
+                    CustomFlags: {
+                        'GoogleAds.ECData': GoogleECData
+                    },
+                });
+
+                window.enhanced_conversion_data.email.should.equal(
+                    'test@gmail.com'
+                );
+                window.enhanced_conversion_data.phone_number.should.equal(
+                    '1-911-867-5309'
+                );
+                window.enhanced_conversion_data.first_name.should.equal('John');
+                window.enhanced_conversion_data.last_name.should.equal('Doe');
+                window.enhanced_conversion_data.home_address.street.should.equal(
+                    '123 Main St'
+                );
+                window.enhanced_conversion_data.home_address.city.should.equal(
+                    'San Francisco'
+                );
+                window.enhanced_conversion_data.home_address.region.should.equal(
+                    'CA'
+                );
+                window.enhanced_conversion_data.home_address.postal_code.should.equal(
+                    '12345'
+                );
+                window.enhanced_conversion_data.home_address.country.should.equal('US');
+
+                done();
+            });
+
+            it('should set enhanced conversion data as strings on commerce events', function(done) {
+                mParticle.forwarder.process({
+                    EventName: 'eCommerce - Purchase',
+                    EventDataType: MessageType.Commerce,
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1,
+                            },
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: 'USD',
+                    CustomFlags: {
+                        'GoogleAds.ECData': JSON.stringify(GoogleECData),
+                    },
+                });
+
+                window.enhanced_conversion_data.email.should.equal(
+                    'test@gmail.com'
+                );
+                window.enhanced_conversion_data.phone_number.should.equal(
+                    '1-911-867-5309'
+                );
+                window.enhanced_conversion_data.first_name.should.equal('John');
+                window.enhanced_conversion_data.last_name.should.equal('Doe');
+                window.enhanced_conversion_data.home_address.street.should.equal(
+                    '123 Main St'
+                );
+                window.enhanced_conversion_data.home_address.city.should.equal(
+                    'San Francisco'
+                );
+                window.enhanced_conversion_data.home_address.region.should.equal(
+                    'CA'
+                );
+                window.enhanced_conversion_data.home_address.postal_code.should.equal(
+                    '12345'
+                );
+                window.enhanced_conversion_data.home_address.country.should.equal('US');
+
+                done();
+            });
+
+            it('should set malformed enhanced conversion data to an empty object', function (done) {
+                mParticle.forwarder.process({
+                    EventName: 'eCommerce - Purchase',
+                    EventDataType: MessageType.Commerce,
+                    ProductAction: {
+                        ProductActionType: ProductActionType.Purchase,
+                        ProductList: [
+                            {
+                                Sku: '12345',
+                                Name: 'iPhone 6',
+                                Category: 'Phones',
+                                Brand: 'iPhone',
+                                Variant: '6',
+                                Price: 400,
+                                CouponCode: null,
+                                Quantity: 1,
+                            },
+                        ],
+                        TransactionId: 123,
+                        Affiliation: 'my-affiliation',
+                        TotalAmount: 450,
+                        TaxAmount: 40,
+                        ShippingAmount: 10,
+                    },
+                    CurrencyCode: 'USD',
+                    CustomFlags: {
+                        'GoogleAds.ECData': true
+                    },
+                });
+
+                window.enhanced_conversion_data.should.eql({});
 
                 done();
             });
