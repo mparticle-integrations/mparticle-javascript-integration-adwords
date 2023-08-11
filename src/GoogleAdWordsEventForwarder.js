@@ -135,10 +135,13 @@
                     console.warn('Unrecognized Enhanced Conversion Data Format', conversionData, error);
                     return {};
                 }
-            } else {
+            } else if (typeof conversionData === 'object') {
                 // Not a stringified object so it can be used as-is. However,
                 // we want to avoid mutating the original state, so we make a copy.
                 return cloneObject(conversionData);
+            } else {
+                console.warn('Unrecognized Enhanced Conversion Data Format', conversionData);
+                return {}
             }
 
         }
