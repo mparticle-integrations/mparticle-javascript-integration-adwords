@@ -53,13 +53,15 @@
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                        if (hasEnhancedConversionData(event.CustomFlags)) {
-                            if (forwarderSettings.enableEnhancedConversions === 'True') {
-                                const conversionData = parseEnhancedConversionData(event.CustomFlags[ENHANCED_CONVERSION_DATA]);
-                                window.enhanced_conversion_data = sanitizeEnhancedConversionData(conversionData);
-                            } else {
-                                console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
-                           }
+                        if (
+                            forwarderSettings.enableEnhancedConversions ===
+                                'True' &&
+                            hasEnhancedConversionData(event.CustomFlags)
+                        ) {
+                            window.enhanced_conversion_data =
+                                parseEnhancedConversionData(
+                                    event.CustomFlags[ENHANCED_CONVERSION_DATA]
+                                );
                         }
 
                         sendEventFunction = sendGtagEvent;
@@ -105,8 +107,7 @@
                     }
 
                     return 'Can\'t send to forwarder: ' + name + '. Event not mapped';
-                }
-                catch (e) {
+                } catch (e) {
                     console.error('Can\t send to forwarder', e);
                     return 'Can\'t send to forwarder: ' + name + ' ' + e;
                 }
@@ -118,26 +119,6 @@
             }
 
             return 'Can\'t send to forwarder ' + name + ', not initialized. Event added to queue.';
-        }
-
-        function sanitizeEnhancedConversionData(conversionData) {
-            const sanitizedConversionData = {};
-
-            const allowedKeys = [
-                'email',
-                'phone_number',
-                'first_name',
-                'last_name',
-                'home_address',
-            ];
-
-            allowedKeys.forEach(function (key) {
-                if(conversionData[key]) {
-                    sanitizedConversionData[key] = conversionData[key];
-                }
-            });
-
-            return sanitizedConversionData;
         }
 
         function hasEnhancedConversionData(customFlags) {
@@ -155,8 +136,8 @@
                     return {};
                 }
             } else {
-                // Not a string, no need to sanitize, but we should not
-                // mutate the original state
+                // Not a stringified object so it can be used as-is. However,
+                // we want to avoid mutating the original state, so we make a copy.
                 return cloneObject(conversionData);
             }
 
