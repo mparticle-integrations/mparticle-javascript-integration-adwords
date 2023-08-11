@@ -141,7 +141,7 @@
                 return cloneObject(conversionData);
             } else {
                 console.warn('Unrecognized Enhanced Conversion Data Format', conversionData);
-                return {}
+                return {};
             }
 
         }
