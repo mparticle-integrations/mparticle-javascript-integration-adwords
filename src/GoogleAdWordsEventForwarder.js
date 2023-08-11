@@ -127,7 +127,7 @@
 
         function parseEnhancedConversionData(conversionData) {
             // Checks if conversion data in custom flags is a stringified object
-            // Conversion data should only be a stringified object or JSON
+            // Conversion data should only be a stringified object or a JS object 
             if (typeof conversionData === 'string') {
                 try {
                     return JSON.parse(conversionData);
