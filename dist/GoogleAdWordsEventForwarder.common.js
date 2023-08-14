@@ -55,17 +55,15 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                        if (event.CustomFlags && 
-                            Object.keys(event.CustomFlags).length &&
-                            event.CustomFlags[ENHANCED_CONVERSION_DATA]
+                        if (
+                            forwarderSettings.enableEnhancedConversions ===
+                                'True' &&
+                            hasEnhancedConversionData(event.CustomFlags)
                         ) {
-                            if (forwarderSettings.enableEnhancedConversions === 'True') {
-                                setEnhancedConversionData(
+                            window.enhanced_conversion_data =
+                                parseEnhancedConversionData(
                                     event.CustomFlags[ENHANCED_CONVERSION_DATA]
                                 );
-                            } else {
-                                console.warn('You have a custom flag of enhanced conversions, but you have not enabled enhanced converisons');
-                            }
                         }
 
                         sendEventFunction = sendGtagEvent;
@@ -111,8 +109,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
                     }
 
                     return 'Can\'t send to forwarder: ' + name + '. Event not mapped';
-                }
-                catch (e) {
+                } catch (e) {
                     console.error('Can\t send to forwarder', e);
                     return 'Can\'t send to forwarder: ' + name + ' ' + e;
                 }
@@ -126,23 +123,29 @@ Object.defineProperty(exports, '__esModule', { value: true });
             return 'Can\'t send to forwarder ' + name + ', not initialized. Event added to queue.';
         }
 
-        function setEnhancedConversionData(enhancedConversionData) {
-            if (enhancedConversionData.email) {
-                window.enhanced_conversion_data.email = enhancedConversionData.email;
+        function hasEnhancedConversionData(customFlags) {
+            return customFlags && Object.keys(customFlags).length && customFlags[ENHANCED_CONVERSION_DATA];
+        }
+
+        function parseEnhancedConversionData(conversionData) {
+            // Checks if conversion data in custom flags is a stringified object
+            // Conversion data should only be a stringified object or a JS object 
+            if (typeof conversionData === 'string') {
+                try {
+                    return JSON.parse(conversionData);
+                } catch (error) {
+                    console.warn('Unrecognized Enhanced Conversion Data Format', conversionData, error);
+                    return {};
+                }
+            } else if (typeof conversionData === 'object') {
+                // Not a stringified object so it can be used as-is. However,
+                // we want to avoid mutating the original state, so we make a copy.
+                return cloneObject(conversionData);
+            } else {
+                console.warn('Unrecognized Enhanced Conversion Data Format', conversionData);
+                return {};
             }
-            if (enhancedConversionData.phone_number) {
-                window.enhanced_conversion_data.phone_number = enhancedConversionData.phone_number;
-            }
-            if (enhancedConversionData.first_name) {
-                window.enhanced_conversion_data.first_name = enhancedConversionData.first_name;
-            }
-            if (enhancedConversionData.last_name) {
-                window.enhanced_conversion_data.last_name = enhancedConversionData.last_name;
-            }
-            if (enhancedConversionData.home_address) {
-                window.enhanced_conversion_data.home_address =
-                    enhancedConversionData.home_address;
-            }
+
         }
 
         // Converts an mParticle Commerce Event into either Legacy or gtag Event
@@ -473,6 +476,10 @@ Object.defineProperty(exports, '__esModule', { value: true });
              }
         }
         return resObj;
+    }
+
+    function cloneObject(obj) {
+        return JSON.parse(JSON.stringify(obj));
     }
 
     if (typeof window !== 'undefined') {
