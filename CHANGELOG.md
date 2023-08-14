@@ -1,3 +1,14 @@
+## [2.2.1](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.2.0...v2.2.1) (2023-08-14)
+
+### Bug Fixes
+
+* Bugfix - Add support for stringified objects in custom flags ([#48](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/pull/48))
+
+
+### CI/CD Changes
+
+* Fix tests that fail silently ([#49](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/pull/49))
+
 # [2.2.0](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.1.1...v2.2.0) (2021-11-11)
 
 
@@ -7,6 +18,8 @@
 
 ## [2.1.1](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.1.0...v2.1.1) (2021-11-11)
 
+* fix: Correct send_to in gtag API ([#23](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/pull/23)) ([af01adc](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/af01adc2b04453f77845e228bff4aa6c49824fde))
+* fix: Prevent unmapped events from being forwarded ([#22](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/pull/22)) ([50e6d27](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/50e6d279dff666f5621e585878672707a21d911f))
 
 ### Bug Fixes
 
