@@ -28,12 +28,28 @@
         },
         ENHANCED_CONVERSION_DATA = "GoogleAds.ECData";
 
+    var googleConsentValues = {
+        UNSPECIFIED: 'unspecified', // Used by S2S. Placed here to align with enum
+        DENIED: 'denied',
+        GRANTED: 'granted',
+    };
+
+    var googleConsentProperties = [
+        'ad_storage',
+        'ad_user_data',
+        'ad_personalization',
+        'analytics_storage',
+    ];
+
+
     var constructor = function () {
         var self = this,
             isInitialized = false,
             forwarderSettings,
             labels,
             customAttributeMappings,
+            consentMappings,
+            consentPayloadHash = '',
             reportingService,
             eventQueue = [],
             gtagSiteId;
@@ -53,6 +69,24 @@
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
+                        if (event && event.ConsentState) {
+                            var eventConsentState =
+                                event.ConsentState.getGDPRConsentState();
+    
+                            var updateConsentPayload = generateConsentStatePayloadFromMappings(
+                                eventConsentState,
+                                consentMappings
+                            );
+    
+                            var eventPayloadHash =
+                                hashConsentPayload(updateConsentPayload);
+    
+                            if (eventPayloadHash !== consentPayloadHash) {
+                                sendGtagConsentUpdate(updateConsentPayload);
+                                consentPayloadHash = eventPayloadHash;
+                            }
+                        }
+
                         if (
                             forwarderSettings.enableEnhancedConversions ===
                                 'True' &&
@@ -259,6 +293,26 @@
             return true;
         }
 
+        function sendGtagConsentDefaults(payload) {
+            try {
+                gtag('consent', 'default', payload);
+            } catch (e) {
+                console.error('gtag is not available to send consent defaults: ', payload, e);
+                return false;
+            }
+            return true;
+        }
+
+        function sendGtagConsentUpdate(payload) {
+            try {
+                gtag('consent', 'update', payload);
+            } catch (e) {
+                console.error('gtag is not available to send consent update: ', payload, e);
+                return false;
+            }
+            return true;
+        }
+
         function sendAdwordsEvent(payload) {
             try {
                 window.google_trackConversion(payload);
@@ -267,6 +321,31 @@
                 return false;
             }
             return true;
+        }
+
+        // Creates a new Consent State Payload based on Consent State and Mapping
+        function generateConsentStatePayloadFromMappings(consentState, mappings) {
+            var payload = {};
+    
+            for (var mappingEntry of consentMappings) {
+                if (
+                    consentState[mappingEntry.map] &&
+                    mappingEntry.maptype === 'ConsentPurposes' &&
+                    googleConsentProperties.includes(mappingEntry.value)
+                ) {
+                    payload[mappingEntry.value] = consentState[
+                        mappingEntry.map
+                    ].Consented
+                        ? googleConsentValues.GRANTED
+                        : googleConsentValues.DENIED;
+                }
+            }
+    
+            return payload;
+        }
+
+        function hashConsentPayload(payload) {
+            return Object.entries(payload).join(',');
         }
 
         // Looks up an Event's conversionLabel from customAttributeMappings based on computed jsHash value
@@ -372,6 +451,12 @@
             reportingService = service;
 
             try {
+                if (forwarderSettings.consentMapping) {
+                    consentMappings = parseSettingsString(
+                        forwarderSettings.consentMapping
+                    );
+                }
+
                 if (!forwarderSettings.conversionId) {
                     return 'Can\'t initialize forwarder: ' + name + ', conversionId is not defined';
                 }
@@ -391,6 +476,31 @@
 
                 if (!forwarderSettings.conversionId) {
                     return 'Can\'t initialize forwarder: ' + name + ', conversionId is not defined';
+                }
+
+                if (window.gtag && forwarderSettings.enableGtag == 'True') {
+                    try {
+                        if (
+                            mParticle.Identity &&
+                            mParticle.Identity.getCurrentUser
+                        ) {
+                            var initialConsentState =
+                                mParticle.Identity.getCurrentUser()
+                                    .getConsentState()
+                                    .getGDPRConsentState();
+    
+                            var defaultConsentPayload =
+                                generateConsentStatePayloadFromMappings(
+                                    initialConsentState,
+                                    consentMappings
+                                );
+                            consentPayloadHash = hashConsentPayload(defaultConsentPayload);
+    
+                            sendGtagConsentDefaults(defaultConsentPayload);
+                        }
+                    } catch (e) {
+                        console.error('Cannot determine current user');
+                    }
                 }
 
                 forwarderSettings.remarketingOnly = forwarderSettings.remarketingOnly == 'True';
@@ -460,6 +570,10 @@
             };
         }
         console.log('Successfully registered ' + name + ' to your mParticle configuration');
+    }
+
+    function parseSettingsString(settingsString) {
+        return JSON.parse(settingsString.replace(/&quot;/g, '"'));
     }
 
     function isObject(val) {
