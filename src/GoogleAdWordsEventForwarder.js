@@ -69,17 +69,16 @@
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                        if (event && event.ConsentState) {
-                            var eventConsentState =
-                                event.ConsentState.getGDPRConsentState();
-    
+                        const eventConsentState = getEventConsentState(event);
+
+                        if (eventConsentState) {
                             var updateConsentPayload = generateConsentStatePayloadFromMappings(
                                 eventConsentState,
                                 consentMappings
                             );
     
                             var eventPayloadHash =
-                                hashConsentPayload(updateConsentPayload);
+                                stringifyPayload(updateConsentPayload);
     
                             if (eventPayloadHash !== consentPayloadHash) {
                                 sendGtagConsentUpdate(updateConsentPayload);
@@ -200,6 +199,30 @@
             }
         }
 
+        function getUserConsentState() {
+            let userConsentState = null;
+
+            if (mParticle.Identity && mParticle.Identity.getCurrentUser) {
+                const consentState =
+                    mParticle.Identity.getCurrentUser().getConsentState();
+
+                if (consentState && consentState.getGDPRConsentState) {
+                    userConsentState = consentState.getGDPRConsentState();
+                }
+            }
+    
+            return userConsentState;
+        }
+
+        function getEventConsentState(event) {
+            let eventConsentState = null;
+
+            if (event && event.ConsentState) {
+                eventConsentState = event.ConsentState.getGDPRConsentState();
+            }
+
+            return eventConsentState;
+        }
 
         // ** Adwords Events
         function getBaseAdWordEvent() {
@@ -344,7 +367,7 @@
             return payload;
         }
 
-        function hashConsentPayload(payload) {
+        function stringifyPayload(payload) {
             return Object.entries(payload).join(',');
         }
 
@@ -479,27 +502,17 @@
                 }
 
                 if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                    try {
-                        if (
-                            mParticle.Identity &&
-                            mParticle.Identity.getCurrentUser
-                        ) {
-                            var initialConsentState =
-                                mParticle.Identity.getCurrentUser()
-                                    .getConsentState()
-                                    .getGDPRConsentState();
-    
-                            var defaultConsentPayload =
-                                generateConsentStatePayloadFromMappings(
-                                    initialConsentState,
-                                    consentMappings
-                                );
-                            consentPayloadHash = hashConsentPayload(defaultConsentPayload);
-    
-                            sendGtagConsentDefaults(defaultConsentPayload);
-                        }
-                    } catch (e) {
-                        console.error('Cannot determine current user');
+                    const initialConsentState = getUserConsentState();
+
+                    if (initialConsentState) {
+                        var defaultConsentPayload =
+                            generateConsentStatePayloadFromMappings(
+                                initialConsentState,
+                                consentMappings
+                            );
+                        consentPayloadHash = stringifyPayload(defaultConsentPayload);
+
+                        sendGtagConsentDefaults(defaultConsentPayload);
                     }
                 }
 
