@@ -205,6 +205,12 @@
             let userConsentState = null;
 
             if (mParticle.Identity && mParticle.Identity.getCurrentUser) {
+                const currentUser = mParticle.Identity.getCurrentUser();
+
+                if (!currentUser) {
+                    return null;
+                }
+
                 const consentState =
                     mParticle.Identity.getCurrentUser().getConsentState();
 
@@ -212,7 +218,7 @@
                     userConsentState = consentState.getGDPRConsentState();
                 }
             }
-    
+
             return userConsentState;
         }
 
