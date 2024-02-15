@@ -29,9 +29,9 @@
         ENHANCED_CONVERSION_DATA = "GoogleAds.ECData";
 
     var googleConsentValues = {
-        UNSPECIFIED: 'unspecified', // Used by S2S. Placed here to align with enum
-        DENIED: 'denied',
-        GRANTED: 'granted',
+        // Unspecified: 'unspecified', // Used by S2S but we will filter out unspecified values
+        Denied: 'denied',
+        Granted: 'granted',
     };
 
     var googleConsentProperties = [
@@ -49,7 +49,8 @@
             labels,
             customAttributeMappings,
             consentMappings,
-            consentPayloadHash = '',
+            consentPayloadDefaults = {},
+            consentPayloadAsString = '',
             reportingService,
             eventQueue = [],
             gtagSiteId;
@@ -74,15 +75,16 @@
                         if (eventConsentState) {
                             var updateConsentPayload = generateConsentStatePayloadFromMappings(
                                 eventConsentState,
-                                consentMappings
+                                consentMappings,
+                                consentPayloadDefaults,
                             );
     
-                            var eventPayloadHash =
+                            var eventPayloadHashAsString =
                                 stringifyPayload(updateConsentPayload);
     
-                            if (eventPayloadHash !== consentPayloadHash) {
+                            if (eventPayloadHashAsString !== consentPayloadAsString) {
                                 sendGtagConsentUpdate(updateConsentPayload);
-                                consentPayloadHash = eventPayloadHash;
+                                consentPayloadAsString = eventPayloadHashAsString;
                             }
                         }
 
@@ -265,6 +267,48 @@
             return adWordEvent;
         }
 
+        function getConsentSettings() {
+            const consentSettings = {};
+    
+            if (
+                forwarderSettings.adStorageConsentWeb &&
+                googleConsentValues[forwarderSettings.adStorageConsentWeb]
+            ) {
+                consentSettings['ad_storage'] =
+                    googleConsentValues[forwarderSettings.adStorageConsentWeb];
+            }
+    
+            if (
+                forwarderSettings.adUserDataConsentWeb &&
+                googleConsentValues[forwarderSettings.adUserDataConsentWeb]
+            ) {
+                consentSettings['ad_user_data'] =
+                    googleConsentValues[forwarderSettings.adUserDataConsentWeb];
+            }
+    
+            if (
+                forwarderSettings.adPersonalizationConsentWeb &&
+                googleConsentValues[forwarderSettings.adPersonalizationConsentWeb]
+            ) {
+                consentSettings['ad_personalization'] =
+                    googleConsentValues[
+                        forwarderSettings.adPersonalizationConsentWeb
+                    ];
+            }
+    
+            if (
+                forwarderSettings.analyticsStorageConsentWeb &&
+                googleConsentValues[forwarderSettings.analyticsStorageConsentWeb]
+            ) {
+                consentSettings['analytics_storage'] =
+                    googleConsentValues[
+                        forwarderSettings.analyticsStorageConsentWeb
+                    ];
+            }
+    
+            return consentSettings;
+        }
+
         // gtag Events
         function getBaseGtagEvent(conversionLabel) {
             return {
@@ -347,10 +391,10 @@
         }
 
         // Creates a new Consent State Payload based on Consent State and Mapping
-        function generateConsentStatePayloadFromMappings(consentState, mappings) {
-            var payload = {};
+        function generateConsentStatePayloadFromMappings(consentState, mappings, defaults) {
+            const payload = cloneObject(defaults);
     
-            for (var mappingEntry of consentMappings) {
+            for (var mappingEntry of mappings) {
                 if (
                     consentState[mappingEntry.map] &&
                     mappingEntry.maptype === 'ConsentPurposes' &&
@@ -359,8 +403,8 @@
                     payload[mappingEntry.value] = consentState[
                         mappingEntry.map
                     ].Consented
-                        ? googleConsentValues.GRANTED
-                        : googleConsentValues.DENIED;
+                        ? googleConsentValues.Granted
+                        : googleConsentValues.Denied;
                 }
             }
     
@@ -474,11 +518,13 @@
             reportingService = service;
 
             try {
-                if (forwarderSettings.consentMapping) {
+                if (forwarderSettings.consentMappingWeb) {
                     consentMappings = parseSettingsString(
-                        forwarderSettings.consentMapping
+                        forwarderSettings.consentMappingWeb
                     );
                 }
+
+                consentPayloadDefaults = getConsentSettings();
 
                 if (!forwarderSettings.conversionId) {
                     return 'Can\'t initialize forwarder: ' + name + ', conversionId is not defined';
@@ -508,9 +554,10 @@
                         var defaultConsentPayload =
                             generateConsentStatePayloadFromMappings(
                                 initialConsentState,
-                                consentMappings
+                                consentMappings,
+                                consentPayloadDefaults,
                             );
-                        consentPayloadHash = stringifyPayload(defaultConsentPayload);
+                        consentPayloadAsString = stringifyPayload(defaultConsentPayload);
 
                         sendGtagConsentDefaults(defaultConsentPayload);
                     }
