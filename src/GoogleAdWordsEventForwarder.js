@@ -74,7 +74,7 @@
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                        const eventConsentState = getEventConsentState(event);
+                        var eventConsentState = getEventConsentState(event);
 
                         if (eventConsentState) {
                             var updateConsentPayload = generateConsentStatePayloadFromMappings(
@@ -206,16 +206,16 @@
         }
 
         function getUserConsentState() {
-            let userConsentState = null;
+            var userConsentState = null;
 
             if (mParticle.Identity && mParticle.Identity.getCurrentUser) {
-                const currentUser = mParticle.Identity.getCurrentUser();
+                var currentUser = mParticle.Identity.getCurrentUser();
 
                 if (!currentUser) {
                     return null;
                 }
 
-                const consentState =
+                var consentState =
                     mParticle.Identity.getCurrentUser().getConsentState();
 
                 if (consentState && consentState.getGDPRConsentState) {
@@ -227,7 +227,7 @@
         }
 
         function getEventConsentState(event) {
-            let eventConsentState = null;
+            var eventConsentState = null;
 
             if (event && event.ConsentState) {
                 eventConsentState = event.ConsentState.getGDPRConsentState();
@@ -278,7 +278,7 @@
         }
 
         function getConsentSettings() {
-            const consentSettings = {};
+            var consentSettings = {};
     
             if (
                 forwarderSettings.adStorageConsentWeb &&
@@ -402,7 +402,7 @@
 
         // Creates a new Consent State Payload based on Consent State and Mapping
         function generateConsentStatePayloadFromMappings(consentState, mappings, defaults) {
-            const payload = cloneObject(defaults);
+            var payload = cloneObject(defaults);
     
             for (var mappingEntry of mappings) {
                 if (
@@ -558,7 +558,7 @@
                 }
 
                 if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                    const initialConsentState = getUserConsentState();
+                    var initialConsentState = getUserConsentState();
 
                     if (initialConsentState) {
                         var defaultConsentPayload =
