@@ -404,15 +404,15 @@
         function generateConsentStatePayloadFromMappings(consentState, mappings, defaults) {
             var payload = cloneObject(defaults);
     
-            for (var mappingEntry of mappings) {
+            for (var i = 0; i <= mappings.length - 1; i++) {
+                var mappingEntry = mappings[i];
                 if (
                     consentState[mappingEntry.map] &&
                     mappingEntry.maptype === 'ConsentPurposes' &&
                     googleConsentProperties.includes(mappingEntry.value)
                 ) {
-                    payload[mappingEntry.value] = consentState[
-                        mappingEntry.map
-                    ].Consented
+                    payload[mappingEntry.value] = consentState[mappingEntry.map]
+                        .Consented
                         ? googleConsentValues.Granted
                         : googleConsentValues.Denied;
                 }
