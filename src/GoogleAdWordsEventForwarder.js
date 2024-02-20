@@ -536,10 +536,9 @@
                     }
     
                     consentPayloadDefaults = getConsentSettings();
-
                     var initialConsentState = getUserConsentState();
 
-                    if (initialConsentState) {
+                    if (consentPayloadDefaults && initialConsentState) {
                         var defaultConsentPayload =
                             generateConsentStatePayloadFromMappings(
                                 initialConsentState,
