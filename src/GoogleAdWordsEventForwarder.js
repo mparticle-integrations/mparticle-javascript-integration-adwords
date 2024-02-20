@@ -77,17 +77,17 @@
                         var eventConsentState = getEventConsentState(event);
 
                         if (eventConsentState) {
-                            var updateConsentPayload = generateConsentStatePayloadFromMappings(
+                            var updatedConsentPayload = generateConsentStatePayloadFromMappings(
                                 eventConsentState,
                                 consentMappings,
                                 consentPayloadDefaults,
                             );
     
                             var eventPayloadHashAsString =
-                                stringifyPayload(updateConsentPayload);
+                                stringifyPayload(updatedConsentPayload);
     
                             if (eventPayloadHashAsString !== consentPayloadAsString) {
-                                sendGtagConsentUpdate(updateConsentPayload);
+                                sendGtagConsentUpdate(updatedConsentPayload);
                                 consentPayloadAsString = eventPayloadHashAsString;
                             }
                         }
