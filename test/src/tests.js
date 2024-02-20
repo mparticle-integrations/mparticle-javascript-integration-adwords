@@ -1132,6 +1132,33 @@ describe('Adwords forwarder', function () {
         });
 
         describe('Consent State', function () {
+            var consentMap = [
+                {
+                    jsmap: null,
+                    map: 'some_consent',
+                    maptype: 'ConsentPurposes',
+                    value: 'ad_user_data',
+                },
+                {
+                    jsmap: null,
+                    map: 'storage_consent',
+                    maptype: 'ConsentPurposes',
+                    value: 'analytics_storage',
+                },
+                {
+                    jsmap: null,
+                    map: 'other_test_consent',
+                    maptype: 'ConsentPurposes',
+                    value: 'ad_storage',
+                },
+                {
+                    jsmap: null,
+                    map: 'test_consent',
+                    maptype: 'ConsentPurposes',
+                    value: 'ad_personalization',
+                },
+            ];
+
             beforeEach(function () {
                 window.dataLayer = [];
                 window.gtag = function () {
@@ -1173,8 +1200,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb:
-                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                        consentMappingWeb: JSON.stringify(consentMap),
                     },
                     reportService.cb,
                     true
@@ -1201,8 +1227,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb:
-                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                        consentMappingWeb: JSON.stringify(consentMap),
                         adPersonalizationConsentWeb: 'Granted', // Will be overriden by User Consent State
                         adUserDataConsentWeb: 'Granted', // Will be overriden by User Consent State
                         adStorageConsentWeb: 'Granted',
@@ -1236,8 +1261,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb:
-                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                        consentMappingWeb: JSON.stringify(consentMap),
                         adStorageConsentWeb: 'Unspecified', // Will be overriden by User Consent State
                         adUserDataConsentWeb: 'Unspecified', // Will be overriden by User Consent State
                         adPersonalizationConsentWeb: 'Unspecified',
@@ -1269,8 +1293,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb:
-                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                        consentMappingWeb: JSON.stringify(consentMap),
                     },
                     reportService.cb,
                     true
@@ -1427,8 +1450,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb:
-                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                        consentMappingWeb: JSON.stringify(consentMap),
                         adPersonalizationConsentWeb: 'Granted', // Will be overriden by User Consent State
                         adUserDataConsentWeb: 'Granted', // Will be overriden by User Consent State
                         adStorageConsentWeb: 'Granted',
@@ -1593,8 +1615,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb:
-                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                        consentMappingWeb: JSON.stringify(consentMap),
                     },
                     reportService.cb,
                     true
