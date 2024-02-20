@@ -28,6 +28,7 @@
         },
         ENHANCED_CONVERSION_DATA = "GoogleAds.ECData";
 
+    // Declares valid Google consent values
     var googleConsentValues = {
         // Server Integration uses 'Unspecified' as a value when the setting is 'not set'.
         // However, this is not used by Google's Web SDK. We are referencing it here as a comment 
@@ -38,6 +39,7 @@
         Granted: 'granted',
     };
 
+    // Declares list of valid Google Consent Properties
     var googleConsentProperties = [
         'ad_storage',
         'ad_user_data',
@@ -45,6 +47,13 @@
         'analytics_storage',
     ];
 
+    // Maps Consent Settings to Forwarder Settings
+    var forwarderSettingsMapping = {
+        ad_storage: 'adStorageConsentWeb',
+        ad_user_data: 'adUserDataConsentWeb',
+        ad_personalization: 'adPersonalizationConsentWeb',
+        analytics_storage: 'analyticsStorageConsentWeb'
+    }
 
     var constructor = function () {
         var self = this,
@@ -279,42 +288,14 @@
 
         function getConsentSettings() {
             var consentSettings = {};
-    
-            if (
-                forwarderSettings.adStorageConsentWeb &&
-                googleConsentValues[forwarderSettings.adStorageConsentWeb]
-            ) {
-                consentSettings['ad_storage'] =
-                    googleConsentValues[forwarderSettings.adStorageConsentWeb];
-            }
-    
-            if (
-                forwarderSettings.adUserDataConsentWeb &&
-                googleConsentValues[forwarderSettings.adUserDataConsentWeb]
-            ) {
-                consentSettings['ad_user_data'] =
-                    googleConsentValues[forwarderSettings.adUserDataConsentWeb];
-            }
-    
-            if (
-                forwarderSettings.adPersonalizationConsentWeb &&
-                googleConsentValues[forwarderSettings.adPersonalizationConsentWeb]
-            ) {
-                consentSettings['ad_personalization'] =
-                    googleConsentValues[
-                        forwarderSettings.adPersonalizationConsentWeb
-                    ];
-            }
-    
-            if (
-                forwarderSettings.analyticsStorageConsentWeb &&
-                googleConsentValues[forwarderSettings.analyticsStorageConsentWeb]
-            ) {
-                consentSettings['analytics_storage'] =
-                    googleConsentValues[
-                        forwarderSettings.analyticsStorageConsentWeb
-                    ];
-            }
+
+            Object.keys(forwarderSettingsMapping).forEach(function (settingsKey) {
+                var forwarderSettingsKey = forwarderSettingsMapping[settingsKey];
+                var googleConsentValuesKey = forwarderSettings[forwarderSettingsKey]
+                if (forwarderSettings[forwarderSettingsKey] && googleConsentValues[googleConsentValuesKey]){
+                    consentSettings[settingsKey] = googleConsentValues[googleConsentValuesKey];
+                }
+            });
     
             return consentSettings;
         }
