@@ -92,12 +92,12 @@
                                 consentPayloadDefaults,
                             );
     
-                            var eventPayloadHashAsString =
+                            var eventPayloadAsString =
                                 JSON.stringify(updatedConsentPayload);
     
-                            if (eventPayloadHashAsString !== consentPayloadAsString) {
+                            if (eventPayloadAsString !== consentPayloadAsString) {
                                 sendGtagConsentUpdate(updatedConsentPayload);
-                                consentPayloadAsString = eventPayloadHashAsString;
+                                consentPayloadAsString = eventPayloadAsString;
                             }
                         }
 
@@ -507,14 +507,6 @@
             reportingService = service;
 
             try {
-                if (forwarderSettings.consentMappingWeb) {
-                    consentMappings = parseSettingsString(
-                        forwarderSettings.consentMappingWeb
-                    );
-                }
-
-                consentPayloadDefaults = getConsentSettings();
-
                 if (!forwarderSettings.conversionId) {
                     return 'Can\'t initialize forwarder: ' + name + ', conversionId is not defined';
                 }
@@ -537,6 +529,14 @@
                 }
 
                 if (window.gtag && forwarderSettings.enableGtag === 'True') {
+                    if (forwarderSettings.consentMappingWeb) {
+                        consentMappings = parseSettingsString(
+                            forwarderSettings.consentMappingWeb
+                        );
+                    }
+    
+                    consentPayloadDefaults = getConsentSettings();
+
                     var initialConsentState = getUserConsentState();
 
                     if (initialConsentState) {
