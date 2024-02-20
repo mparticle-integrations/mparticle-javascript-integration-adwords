@@ -84,7 +84,7 @@
                             );
     
                             var eventPayloadHashAsString =
-                                stringifyPayload(updatedConsentPayload);
+                                JSON.stringify(updatedConsentPayload);
     
                             if (eventPayloadHashAsString !== consentPayloadAsString) {
                                 sendGtagConsentUpdate(updatedConsentPayload);
@@ -401,17 +401,19 @@
         }
 
         // Creates a new Consent State Payload based on Consent State and Mapping
-        function generateConsentStatePayloadFromMappings(consentState, mappings, defaults) {
-            var payload = cloneObject(defaults);
+        function generateConsentStatePayloadFromMappings(consentState, mappings) {
+            var payload = cloneObject(consentPayloadDefaults);
     
             for (var i = 0; i <= mappings.length - 1; i++) {
                 var mappingEntry = mappings[i];
+                var mpMappedConsentName = mappingEntry.map;
+                var googleMappedConsentName = mappingEntry.value;
+
                 if (
-                    consentState[mappingEntry.map] &&
-                    mappingEntry.maptype === 'ConsentPurposes' &&
-                    googleConsentProperties.includes(mappingEntry.value)
+                    consentState[mpMappedConsentName] &&
+                    googleConsentProperties.includes(googleMappedConsentName)
                 ) {
-                    payload[mappingEntry.value] = consentState[mappingEntry.map]
+                    payload[googleMappedConsentName] = consentState[mpMappedConsentName]
                         .Consented
                         ? googleConsentValues.Granted
                         : googleConsentValues.Denied;
@@ -419,10 +421,6 @@
             }
     
             return payload;
-        }
-
-        function stringifyPayload(payload) {
-            return Object.entries(payload).join(',');
         }
 
         // Looks up an Event's conversionLabel from customAttributeMappings based on computed jsHash value
@@ -557,7 +555,7 @@
                     return 'Can\'t initialize forwarder: ' + name + ', conversionId is not defined';
                 }
 
-                if (window.gtag && forwarderSettings.enableGtag == 'True') {
+                if (window.gtag && forwarderSettings.enableGtag === 'True') {
                     var initialConsentState = getUserConsentState();
 
                     if (initialConsentState) {
@@ -567,7 +565,7 @@
                                 consentMappings,
                                 consentPayloadDefaults,
                             );
-                        consentPayloadAsString = stringifyPayload(defaultConsentPayload);
+                        consentPayloadAsString = JSON.stringify(defaultConsentPayload);
 
                         sendGtagConsentDefaults(defaultConsentPayload);
                     }
