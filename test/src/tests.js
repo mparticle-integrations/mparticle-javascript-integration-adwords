@@ -1215,6 +1215,7 @@ describe('Adwords forwarder', function () {
                     },
                 ];
 
+                // https://go.mparticle.com/work/SQDSDKS-6152
                 window.dataLayer.length.should.eql(1);
                 window.dataLayer[0][0].should.equal('consent');
                 window.dataLayer[0][1].should.equal('default');
