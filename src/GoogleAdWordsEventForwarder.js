@@ -29,7 +29,11 @@
         ENHANCED_CONVERSION_DATA = "GoogleAds.ECData";
 
     var googleConsentValues = {
-        // Unspecified: 'unspecified', // Used by S2S but we will filter out unspecified values
+        // Server Integration uses 'Unspecified' as a value when the setting is 'not set'.
+        // However, this is not used by Google's Web SDK. We are referencing it here as a comment 
+        // as a record of this distinction and for posterity.
+        // 
+        // Unspecified: 'unspecified',
         Denied: 'denied',
         Granted: 'granted',
     };
