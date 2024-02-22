@@ -532,6 +532,7 @@
                     return 'Can\'t initialize forwarder: ' + name + ', conversionId is not defined';
                 }
 
+                // https://go.mparticle.com/work/SQDSDKS-6165
                 if (window.gtag && forwarderSettings.enableGtag === 'True') {
                     if (forwarderSettings.consentMappingWeb) {
                         consentMappings = parseSettingsString(
