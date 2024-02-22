@@ -33,6 +33,10 @@
         // Server Integration uses 'Unspecified' as a value when the setting is 'not set'.
         // However, this is not used by Google's Web SDK. We are referencing it here as a comment 
         // as a record of this distinction and for posterity.
+        //
+        // Docs:
+        // Web: https://developers.google.com/tag-platform/gtagjs/reference#consent
+        // S2S: https://developers.google.com/google-ads/api/reference/rpc/v15/ConsentStatusEnum.ConsentStatus
         // 
         // Unspecified: 'unspecified',
         Denied: 'denied',
