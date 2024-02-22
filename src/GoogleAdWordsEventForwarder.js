@@ -505,6 +505,7 @@
             })();
         }
 
+        // https://go.mparticle.com/work/SQDSDKS-6166
         function initForwarder(settings, service, testMode) {
             window.enhanced_conversion_data = {};
             forwarderSettings = settings;
