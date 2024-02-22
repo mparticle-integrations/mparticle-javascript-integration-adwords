@@ -1614,7 +1614,7 @@ describe('Adwords forwarder', function () {
                 done();
             });
 
-            it('should NOT construct a Consent State Update Payload if consent DOES NOT changes', function (done) {
+            it('should NOT construct a Consent State Update Payload if consent DOES NOT change', function (done) {
                 mParticle.forwarder.init(
                     {
                         conversionId: 'AW-123123123',
