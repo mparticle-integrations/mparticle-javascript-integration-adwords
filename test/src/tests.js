@@ -1197,7 +1197,7 @@ describe('Adwords forwarder', function () {
 
             it('should construct a Default Consent State Payload from Mappings', function (done) {
                 // We are intentionally using a string here instead of `JSON.stringify(consentMap)`
-                // so that we can also test how consentMapingWeb is parsed when returned as a string
+                // so that we can also test how consentMappingWeb is parsed when returned as a string
                 // from the mParticle config
                 mParticle.forwarder.init(
                     {
