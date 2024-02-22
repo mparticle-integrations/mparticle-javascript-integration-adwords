@@ -52,14 +52,6 @@
         'analytics_storage',
     ];
 
-    // Maps Consent Settings to Forwarder Settings
-    var forwarderSettingsMapping = {
-        ad_storage: 'adStorageConsentWeb',
-        ad_user_data: 'adUserDataConsentWeb',
-        ad_personalization: 'adPersonalizationConsentWeb',
-        analytics_storage: 'analyticsStorageConsentWeb'
-    }
-
     var constructor = function () {
         var self = this,
             isInitialized = false,
@@ -293,11 +285,19 @@
         function getConsentSettings() {
             var consentSettings = {};
 
-            Object.keys(forwarderSettingsMapping).forEach(function (settingsKey) {
-                var forwarderSettingsKey = forwarderSettingsMapping[settingsKey];
-                var googleConsentValuesKey = forwarderSettings[forwarderSettingsKey]
-                if (forwarderSettings[forwarderSettingsKey] && googleConsentValues[googleConsentValuesKey]){
-                    consentSettings[settingsKey] = googleConsentValues[googleConsentValuesKey];
+            var googleToMpConsentSettingsMapping = {
+                ad_storage: 'adStorageConsentWeb',
+                ad_user_data: 'adUserDataConsentWeb',
+                ad_personalization: 'adPersonalizationConsentWeb',
+                analytics_storage: 'analyticsStorageConsentWeb'
+            }
+
+            Object.keys(googleToMpConsentSettingsMapping).forEach(function (googleConsentKey) {
+                var mpConsentSettingKey = googleToMpConsentSettingsMapping[googleConsentKey];
+                var googleConsentValuesKey = forwarderSettings[mpConsentSettingKey]
+
+                if (googleConsentValuesKey && mpConsentSettingKey){
+                    consentSettings[googleConsentKey] = googleConsentValues[googleConsentValuesKey];
                 }
             });
     
