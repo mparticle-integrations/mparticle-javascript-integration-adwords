@@ -1226,7 +1226,7 @@ describe('Adwords forwarder', function () {
                 done();
             });
 
-            it('should construct a Default Consent State with Consent Settings Defaults', function (done) {
+            it('should merge Consent Setting Defaults with User Consent State to construct a Default Consent State', function (done) {
                 mParticle.forwarder.init(
                     {
                         conversionId: 'AW-123123123',
