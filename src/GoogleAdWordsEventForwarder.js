@@ -33,6 +33,7 @@
         // Server Integration uses 'Unspecified' as a value when the setting is 'not set'.
         // However, this is not used by Google's Web SDK. We are referencing it here as a comment 
         // as a record of this distinction and for posterity.
+        // If Google ever adds this for web, the line can just be uncommented to support this.
         //
         // Docs:
         // Web: https://developers.google.com/tag-platform/gtagjs/reference#consent
@@ -93,15 +94,14 @@
                             var updatedConsentPayload = generateConsentStatePayloadFromMappings(
                                 eventConsentState,
                                 consentMappings,
-                                consentPayloadDefaults,
                             );
     
-                            var eventPayloadAsString =
+                            var eventConsentAsString =
                                 JSON.stringify(updatedConsentPayload);
     
-                            if (eventPayloadAsString !== consentPayloadAsString) {
+                            if (eventConsentAsString !== consentPayloadAsString) {
                                 sendGtagConsentUpdate(updatedConsentPayload);
-                                consentPayloadAsString = eventPayloadAsString;
+                                consentPayloadAsString = eventConsentAsString;
                             }
                         }
 
@@ -396,7 +396,7 @@
 
                 if (
                     consentState[mpMappedConsentName] &&
-                    googleConsentProperties.includes(googleMappedConsentName)
+                    googleConsentProperties.indexOf(googleMappedConsentName) !== -1
                 ) {
                     payload[googleMappedConsentName] = consentState[mpMappedConsentName]
                         .Consented
@@ -549,7 +549,6 @@
                             generateConsentStatePayloadFromMappings(
                                 initialConsentState,
                                 consentMappings,
-                                consentPayloadDefaults,
                             );
                         consentPayloadAsString = JSON.stringify(defaultConsentPayload);
 
