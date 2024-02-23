@@ -213,15 +213,15 @@
         function getUserConsentState() {
             var userConsentState = null;
 
-            if (mParticle.Identity && mParticle.Identity.getCurrentUser) {
-                var currentUser = mParticle.Identity.getCurrentUser();
+            if (window.mParticle && window.mParticle.Identity && window.mParticle.Identity.getCurrentUser) {
+                var currentUser = window.mParticle.Identity.getCurrentUser();
 
                 if (!currentUser) {
                     return null;
                 }
 
                 var consentState =
-                    mParticle.Identity.getCurrentUser().getConsentState();
+                    window.mParticle.Identity.getCurrentUser().getConsentState();
 
                 if (consentState && consentState.getGDPRConsentState) {
                     userConsentState = consentState.getGDPRConsentState();
