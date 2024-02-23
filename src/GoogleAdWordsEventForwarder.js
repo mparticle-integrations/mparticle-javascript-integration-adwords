@@ -286,10 +286,10 @@
             var consentSettings = {};
 
             var googleToMpConsentSettingsMapping = {
-                ad_storage: 'adStorageConsentWeb',
-                ad_user_data: 'adUserDataConsentWeb',
-                ad_personalization: 'adPersonalizationConsentWeb',
-                analytics_storage: 'analyticsStorageConsentWeb'
+                ad_storage: 'adStorageConsentSDK',
+                ad_user_data: 'adUserDataConsentSDK',
+                ad_personalization: 'adPersonalizationConsentSDK',
+                analytics_storage: 'analyticsStorageConsentSDK'
             }
 
             Object.keys(googleToMpConsentSettingsMapping).forEach(function (googleConsentKey) {
@@ -535,9 +535,9 @@
 
                 // https://go.mparticle.com/work/SQDSDKS-6165
                 if (window.gtag && forwarderSettings.enableGtag === 'True') {
-                    if (forwarderSettings.consentMappingWeb) {
+                    if (forwarderSettings.consentMappingSDK) {
                         consentMappings = parseSettingsString(
-                            forwarderSettings.consentMappingWeb
+                            forwarderSettings.consentMappingSDK
                         );
                     }
     

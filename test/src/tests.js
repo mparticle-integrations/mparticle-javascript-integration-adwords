@@ -1197,13 +1197,13 @@ describe('Adwords forwarder', function () {
 
             it('should construct a Default Consent State Payload from Mappings', function (done) {
                 // We are intentionally using a string here instead of `JSON.stringify(consentMap)`
-                // so that we can also test how consentMappingWeb is parsed when returned as a string
+                // so that we can also test how consentMappingSDK is parsed when returned as a string
                 // from the mParticle config
                 mParticle.forwarder.init(
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb: '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                        consentMappingSDK: '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
                     },
                     reportService.cb,
                     true
@@ -1231,11 +1231,11 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb: JSON.stringify(consentMap),
-                        adPersonalizationConsentWeb: 'Granted', // Will be overriden by User Consent State
-                        adUserDataConsentWeb: 'Granted', // Will be overriden by User Consent State
-                        adStorageConsentWeb: 'Granted',
-                        analyticsStorageConsentWeb: 'Granted',
+                        consentMappingSDK: JSON.stringify(consentMap),
+                        adPersonalizationConsentSDK: 'Granted', // Will be overriden by User Consent State
+                        adUserDataConsentSDK: 'Granted', // Will be overriden by User Consent State
+                        adStorageConsentSDK: 'Granted',
+                        analyticsStorageConsentSDK: 'Granted',
                     },
                     reportService.cb,
                     true
@@ -1265,11 +1265,11 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb: JSON.stringify(consentMap),
-                        adStorageConsentWeb: 'Unspecified', // Will be overriden by User Consent State
-                        adUserDataConsentWeb: 'Unspecified', // Will be overriden by User Consent State
-                        adPersonalizationConsentWeb: 'Unspecified',
-                        analyticsStorageConsentWeb: 'Unspecified',
+                        consentMappingSDK: JSON.stringify(consentMap),
+                        adStorageConsentSDK: 'Unspecified', // Will be overriden by User Consent State
+                        adUserDataConsentSDK: 'Unspecified', // Will be overriden by User Consent State
+                        adPersonalizationConsentSDK: 'Unspecified',
+                        analyticsStorageConsentSDK: 'Unspecified',
                     },
                     reportService.cb,
                     true
@@ -1297,7 +1297,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb: JSON.stringify(consentMap),
+                        consentMappingSDK: JSON.stringify(consentMap),
                     },
                     reportService.cb,
                     true
@@ -1454,11 +1454,11 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb: JSON.stringify(consentMap),
-                        adPersonalizationConsentWeb: 'Granted', // Will be overriden by User Consent State
-                        adUserDataConsentWeb: 'Granted', // Will be overriden by User Consent State
-                        adStorageConsentWeb: 'Granted',
-                        analyticsStorageConsentWeb: 'Granted',
+                        consentMappingSDK: JSON.stringify(consentMap),
+                        adPersonalizationConsentSDK: 'Granted', // Will be overriden by User Consent State
+                        adUserDataConsentSDK: 'Granted', // Will be overriden by User Consent State
+                        adStorageConsentSDK: 'Granted',
+                        analyticsStorageConsentSDK: 'Granted',
                     },
                     reportService.cb,
                     true
@@ -1619,7 +1619,7 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        consentMappingWeb: JSON.stringify(consentMap),
+                        consentMappingSDK: JSON.stringify(consentMap),
                     },
                     reportService.cb,
                     true
