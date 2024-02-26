@@ -58,7 +58,7 @@
             forwarderSettings,
             labels,
             customAttributeMappings,
-            consentMappings,
+            consentMappings = [],
             consentPayloadDefaults = {},
             consentPayloadAsString = '',
             reportingService,
@@ -80,20 +80,25 @@
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                        var eventConsentState = getEventConsentState(event.ConsentState);
+                        // If consent payload is empty,
+                        // we never sent an initial default consent state
+                        // so we shouldn't send an update.
+                        if (consentPayloadAsString && forwarderSettings.consentMappingWeb) {
+                            var eventConsentState = getEventConsentState(event.ConsentState);
 
-                        if (eventConsentState) {
-                            var updatedConsentPayload = generateConsentStatePayloadFromMappings(
-                                eventConsentState,
-                                consentMappings,
-                            );
-    
-                            var eventConsentAsString =
-                                JSON.stringify(updatedConsentPayload);
-    
-                            if (eventConsentAsString !== consentPayloadAsString) {
-                                sendGtagConsentUpdate(updatedConsentPayload);
-                                consentPayloadAsString = eventConsentAsString;
+                            if (eventConsentState) {
+                                var updatedConsentPayload = generateConsentStatePayloadFromMappings(
+                                    eventConsentState,
+                                    consentMappings,
+                                );
+        
+                                var eventConsentAsString =
+                                    JSON.stringify(updatedConsentPayload);
+        
+                                if (eventConsentAsString !== consentPayloadAsString) {
+                                    sendGtagConsentUpdate(updatedConsentPayload);
+                                    consentPayloadAsString = eventConsentAsString;
+                                }
                             }
                         }
 
@@ -283,7 +288,7 @@
 
             var googleToMpConsentSettingsMapping = {
                 // Inherited from S2S Integration Settings
-                ad_user_data: 'adUserDataConsentWeb',
+                ad_user_data: 'adUserDataConsent',
                 ad_personalization: 'adPersonalizationConsent',
 
                 // Unique to Web Kits
@@ -345,6 +350,7 @@
         }
 
         function sendGtagEvent(payload) {
+            // https://go.mparticle.com/work/SQDSDKS-6165
             try {
                 gtag('event', 'conversion', payload);
             } catch (e) {
@@ -355,6 +361,7 @@
         }
 
         function sendGtagConsentDefaults(payload) {
+            // https://go.mparticle.com/work/SQDSDKS-6165
             try {
                 gtag('consent', 'default', payload);
             } catch (e) {
@@ -365,6 +372,7 @@
         }
 
         function sendGtagConsentUpdate(payload) {
+            // https://go.mparticle.com/work/SQDSDKS-6165
             try {
                 gtag('consent', 'update', payload);
             } catch (e) {
@@ -386,6 +394,7 @@
 
         // Creates a new Consent State Payload based on Consent State and Mapping
         function generateConsentStatePayloadFromMappings(consentState, mappings) {
+            if (!mappings) return {};
             var payload = cloneObject(consentPayloadDefaults);
     
             for (var i = 0; i <= mappings.length - 1; i++) {
@@ -538,18 +547,25 @@
                         consentMappings = parseSettingsString(
                             forwarderSettings.consentMappingWeb
                         );
+                    } else {
+                        // Ensures consent mappings is an empty array
+                        // for future use
+                        consentMappings = [];
                     }
     
                     consentPayloadDefaults = getConsentSettings();
                     var initialConsentState = getUserConsentState();
 
-                    if (consentPayloadDefaults && initialConsentState) {
-                        var defaultConsentPayload =
-                            generateConsentStatePayloadFromMappings(
-                                initialConsentState,
-                                consentMappings,
-                            );
-                        consentPayloadAsString = JSON.stringify(defaultConsentPayload);
+                    var defaultConsentPayload =
+                        generateConsentStatePayloadFromMappings(
+                            initialConsentState,
+                            consentMappings
+                        );
+                    
+                    if(!isEmpty(defaultConsentPayload)) {
+                        consentPayloadAsString = JSON.stringify(
+                            defaultConsentPayload
+                        );
 
                         sendGtagConsentDefaults(defaultConsentPayload);
                     }
@@ -630,6 +646,10 @@
 
     function isObject(val) {
         return val != null && typeof val === 'object' && Array.isArray(val) === false;
+    }
+
+    function isEmpty(value) {
+        return value == null || !(Object.keys(value) || value).length;
     }
 
     function mergeObjects() {
