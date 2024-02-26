@@ -80,7 +80,7 @@
 
                 try {
                     if (window.gtag && forwarderSettings.enableGtag == 'True') {
-                        var eventConsentState = getEventConsentState(event);
+                        var eventConsentState = getEventConsentState(event.ConsentState);
 
                         if (eventConsentState) {
                             var updatedConsentPayload = generateConsentStatePayloadFromMappings(
@@ -231,15 +231,11 @@
             return userConsentState;
         }
 
-        function getEventConsentState(event) {
-            var eventConsentState = null;
-
-            if (event && event.ConsentState) {
-                eventConsentState = event.ConsentState.getGDPRConsentState();
-            }
-
-            return eventConsentState;
-        }
+        function getEventConsentState(eventConsentState) {
+            return eventConsentState && eventConsentState.getGDPRConsentState
+                ? eventConsentState.getGDPRConsentState()
+                : null;
+        };
 
         // ** Adwords Events
         function getBaseAdWordEvent() {
