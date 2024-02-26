@@ -286,10 +286,13 @@
             var consentSettings = {};
 
             var googleToMpConsentSettingsMapping = {
-                ad_storage: 'adStorageConsentSDK',
-                ad_user_data: 'adUserDataConsentSDK',
-                ad_personalization: 'adPersonalizationConsentSDK',
-                analytics_storage: 'analyticsStorageConsentSDK'
+                // Inherited from S2S Integration Settings
+                ad_user_data: 'adUserDataConsentWeb',
+                ad_personalization: 'adPersonalizationConsent',
+
+                // Unique to Web Kits
+                ad_storage: 'adStorageConsentWeb',
+                analytics_storage: 'analyticsStorageConsentWeb'
             }
 
             Object.keys(googleToMpConsentSettingsMapping).forEach(function (googleConsentKey) {
@@ -535,9 +538,9 @@
 
                 // https://go.mparticle.com/work/SQDSDKS-6165
                 if (window.gtag && forwarderSettings.enableGtag === 'True') {
-                    if (forwarderSettings.consentMappingSDK) {
+                    if (forwarderSettings.consentMappingWeb) {
                         consentMappings = parseSettingsString(
-                            forwarderSettings.consentMappingSDK
+                            forwarderSettings.consentMappingWeb
                         );
                     }
     
