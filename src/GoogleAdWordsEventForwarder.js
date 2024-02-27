@@ -86,7 +86,7 @@
                         if (consentPayloadAsString && forwarderSettings.consentMappingWeb) {
                             var eventConsentState = getEventConsentState(event.ConsentState);
 
-                            if (eventConsentState) {
+                            if (!isEmpty(eventConsentState)) {
                                 var updatedConsentPayload = generateConsentStatePayloadFromMappings(
                                     eventConsentState,
                                     consentMappings,
@@ -216,13 +216,13 @@
         }
 
         function getUserConsentState() {
-            var userConsentState = null;
+            var userConsentState = {};
 
             if (window.mParticle && window.mParticle.Identity && window.mParticle.Identity.getCurrentUser) {
                 var currentUser = window.mParticle.Identity.getCurrentUser();
 
                 if (!currentUser) {
-                    return null;
+                    return {};
                 }
 
                 var consentState =
@@ -239,7 +239,7 @@
         function getEventConsentState(eventConsentState) {
             return eventConsentState && eventConsentState.getGDPRConsentState
                 ? eventConsentState.getGDPRConsentState()
-                : null;
+                : {};
         };
 
         // ** Adwords Events
