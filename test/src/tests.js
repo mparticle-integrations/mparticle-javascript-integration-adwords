@@ -1743,8 +1743,6 @@ describe('Adwords forwarder', function () {
             });
 
             it('should construct Consent State Payloads if consent mappings is undefined but settings defaults are defined', function (done) {
-                debugger;
-
                 mParticle.forwarder.init(
                     {
                         conversionId: 'AW-123123123',
