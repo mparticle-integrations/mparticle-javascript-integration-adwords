@@ -1758,7 +1758,7 @@ describe('Adwords forwarder', function () {
 
                 var expectedDataLayerBefore = [
                     'consent',
-                    'update',
+                    'default',
                     {
                         ad_user_data: 'granted',
                         ad_personalization: 'denied',
