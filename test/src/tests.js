@@ -1713,50 +1713,6 @@ describe('Adwords forwarder', function () {
                                     Timestamp: Date.now(),
                                     Document: 'test_consent',
                                 },
-                            };
-                        },
-
-                        getCCPAConsentState: function () {
-                            return {
-                                data_sale_opt_out: {
-                                    Consented: false,
-                                    Timestamp: Date.now(),
-                                    Document: 'data_sale_opt_out',
-                                },
-                            };
-                        },
-                    },
-                });
-
-                window.dataLayer.length.should.eql(0);
-
-                mParticle.forwarder.process({
-                    EventName: 'Homepage',
-                    EventDataType: MessageType.PageEvent,
-                    EventCategory: EventType.Navigation,
-                    EventAttributes: {
-                        showcase: 'something',
-                        test: 'thisoneshouldgetmapped',
-                        mp: 'rock',
-                    },
-                    ConsentState: {
-                        getGDPRConsentState: function () {
-                            return {
-                                some_consent: {
-                                    Consented: true,
-                                    Timestamp: Date.now(),
-                                    Document: 'some_consent',
-                                },
-                                ignored_consent: {
-                                    Consented: false,
-                                    Timestamp: Date.now(),
-                                    Document: 'ignored_consent',
-                                },
-                                test_consent: {
-                                    Consented: true,
-                                    Timestamp: Date.now(),
-                                    Document: 'test_consent',
-                                },
                                 other_test_consent: {
                                     Consented: true,
                                     Timestamp: Date.now(),
