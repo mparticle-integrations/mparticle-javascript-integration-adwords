@@ -1,3 +1,15 @@
+# [2.3.0](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.2.1...v2.3.0) (2024-02-29)
+
+
+### Bug Fixes
+
+* Delete GoogleAdWordsEventForwarder.js ([#53](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/issues/53)) ([7726369](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/7726369ad54a9d7b45fbc0e70e46f3a2747f2605))
+
+
+### Features
+
+* Add support for Consent State Updates ([#52](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/issues/52)) ([fbddd45](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/fbddd45db90791932d8ad2b26092a7f6ca58b737))
+
 ## [2.2.1](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.2.0...v2.2.1) (2023-08-14)
 
 ### Bug Fixes
