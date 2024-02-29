@@ -288,12 +288,12 @@
 
             var googleToMpConsentSettingsMapping = {
                 // Inherited from S2S Integration Settings
-                ad_user_data: 'adUserDataConsent',
-                ad_personalization: 'adPersonalizationConsent',
+                ad_user_data: 'defaultAdUserDataConsent',
+                ad_personalization: 'defaultAdPersonalizationConsent',
 
                 // Unique to Web Kits
-                ad_storage: 'adStorageConsentWeb',
-                analytics_storage: 'analyticsStorageConsentWeb'
+                ad_storage: 'defaultAdStorageConsentWeb',
+                analytics_storage: 'defaultAnalyticsStorageConsentWeb'
             }
 
             Object.keys(googleToMpConsentSettingsMapping).forEach(function (googleConsentKey) {

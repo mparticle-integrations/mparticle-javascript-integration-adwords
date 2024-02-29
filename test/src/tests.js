@@ -1233,10 +1233,10 @@ describe('Adwords forwarder', function () {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
                         consentMappingWeb: JSON.stringify(consentMap),
-                        adPersonalizationConsent: 'Granted', // Will be overriden by User Consent State
-                        adUserDataConsent: 'Granted', // Will be overriden by User Consent State
-                        adStorageConsentWeb: 'Granted',
-                        analyticsStorageConsentWeb: 'Granted',
+                        defaultAdPersonalizationConsent: 'Granted', // Will be overriden by User Consent State
+                        defaultAdUserDataConsent: 'Granted', // Will be overriden by User Consent State
+                        defaultAdStorageConsentWeb: 'Granted',
+                        defaultAnalyticsStorageConsentWeb: 'Granted',
                     },
                     reportService.cb,
                     true
@@ -1267,10 +1267,10 @@ describe('Adwords forwarder', function () {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
                         consentMappingWeb: JSON.stringify(consentMap),
-                        adStorageConsentWeb: 'Unspecified', // Will be overriden by User Consent State
-                        adUserDataConsent: 'Unspecified', // Will be overriden by User Consent State
-                        adPersonalizationConsent: 'Unspecified',
-                        analyticsStorageConsentWeb: 'Unspecified',
+                        defaultAdStorageConsentWeb: 'Unspecified', // Will be overriden by User Consent State
+                        defaultAdUserDataConsent: 'Unspecified', // Will be overriden by User Consent State
+                        defaultAdPersonalizationConsent: 'Unspecified',
+                        defaultAnalyticsStorageConsentWeb: 'Unspecified',
                     },
                     reportService.cb,
                     true
@@ -1456,10 +1456,10 @@ describe('Adwords forwarder', function () {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
                         consentMappingWeb: JSON.stringify(consentMap),
-                        adPersonalizationConsent: 'Granted', // Will be overriden by User Consent State
-                        adUserDataConsent: 'Granted', // Will be overriden by User Consent State
-                        adStorageConsentWeb: 'Granted',
-                        analyticsStorageConsentWeb: 'Granted',
+                        defaultAdPersonalizationConsent: 'Granted', // Will be overriden by User Consent State
+                        defaultAdUserDataConsent: 'Granted', // Will be overriden by User Consent State
+                        defaultAdStorageConsentWeb: 'Granted',
+                        defaultAnalyticsStorageConsentWeb: 'Granted',
                     },
                     reportService.cb,
                     true
@@ -1747,10 +1747,10 @@ describe('Adwords forwarder', function () {
                     {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
-                        adUserDataConsent: 'Granted',
-                        adPersonalizationConsent: 'Denied',
-                        adStorageConsentWeb: 'Granted',
-                        analyticsStorageConsentWeb: 'Denied',
+                        defaultAdUserDataConsent: 'Granted',
+                        defaultAdPersonalizationConsent: 'Denied',
+                        defaultAdStorageConsentWeb: 'Granted',
+                        defaultAnalyticsStorageConsentWeb: 'Denied',
                     },
                     reportService.cb,
                     true
