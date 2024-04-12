@@ -1135,25 +1135,25 @@ describe('Adwords forwarder', function () {
             var consentMap = [
                 {
                     jsmap: null,
-                    map: 'some_consent',
+                    map: 'Some_consent',
                     maptype: 'ConsentPurposes',
                     value: 'ad_user_data',
                 },
                 {
                     jsmap: null,
-                    map: 'storage_consent',
+                    map: 'Storage_consent',
                     maptype: 'ConsentPurposes',
                     value: 'analytics_storage',
                 },
                 {
                     jsmap: null,
-                    map: 'other_test_consent',
+                    map: 'Other_test_consent',
                     maptype: 'ConsentPurposes',
                     value: 'ad_storage',
                 },
                 {
                     jsmap: null,
-                    map: 'test_consent',
+                    map: 'Test_consent',
                     maptype: 'ConsentPurposes',
                     value: 'ad_personalization',
                 },
@@ -1204,7 +1204,7 @@ describe('Adwords forwarder', function () {
                         conversionId: 'AW-123123123',
                         enableGtag: 'True',
                         consentMappingWeb:
-                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
+                            '[{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;Some_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_user_data&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;Storage_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;analytics_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;Other_test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_storage&quot;},{&quot;jsmap&quot;:null,&quot;map&quot;:&quot;Test_consent&quot;,&quot;maptype&quot;:&quot;ConsentPurposes&quot;,&quot;value&quot;:&quot;ad_personalization&quot;}]',
                     },
                     reportService.cb,
                     true
