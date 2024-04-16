@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.3.0...v2.3.1) (2024-04-16)
+
+
+### Bug Fixes
+
+* Set mapped consent name from server to lowercase ([#57](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/issues/57)) ([e1cbf49](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/e1cbf493f440d0642d30db1bae83262a61a3880a))
+
 # [2.3.0](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.2.1...v2.3.0) (2024-02-29)
 
 
