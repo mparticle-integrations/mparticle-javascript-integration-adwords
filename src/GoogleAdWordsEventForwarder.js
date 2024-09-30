@@ -83,24 +83,8 @@
                         // If consent payload is empty,
                         // we never sent an initial default consent state
                         // so we shouldn't send an update.
-                        if (consentPayloadAsString && forwarderSettings.consentMappingWeb) {
-                            var eventConsentState = getEventConsentState(event.ConsentState);
-
-                            if (!isEmpty(eventConsentState)) {
-                                var updatedConsentPayload = generateConsentStatePayloadFromMappings(
-                                    eventConsentState,
-                                    consentMappings,
-                                );
-        
-                                var eventConsentAsString =
-                                    JSON.stringify(updatedConsentPayload);
-        
-                                if (eventConsentAsString !== consentPayloadAsString) {
-                                    sendGtagConsentUpdate(updatedConsentPayload);
-                                    consentPayloadAsString = eventConsentAsString;
-                                }
-                            }
-                        }
+                        var eventConsentState = getEventConsentState(event.ConsentState);
+                        maybeSendConsentUpdateToGoogle(eventConsentState)
 
                         if (
                             forwarderSettings.enableEnhancedConversions ===
@@ -360,8 +344,33 @@
             return true;
         }
 
+        function maybeSendConsentUpdateToGoogle(consentState) {
+            if (
+                consentPayloadAsString && 
+                forwarderSettings.consentMappingWeb &&
+                !isEmpty(consentState)
+            ) {
+                var updatedConsentPayload = generateConsentStatePayloadFromMappings(
+                    consentState,
+                    consentMappings,
+                );
+
+                var eventConsentAsString =
+                    JSON.stringify(updatedConsentPayload);
+
+                if (eventConsentAsString !== consentPayloadAsString) {
+                    sendGtagConsentUpdate(updatedConsentPayload);
+                    consentPayloadAsString = eventConsentAsString;
+                }
+            }
+        }
+
         function sendGtagConsentDefaults(payload) {
             // https://go.mparticle.com/work/SQDSDKS-6165
+            consentPayloadAsString = JSON.stringify(
+                payload
+            );
+
             try {
                 gtag('consent', 'default', payload);
             } catch (e) {
@@ -558,21 +567,22 @@
                     }
     
                     consentPayloadDefaults = getConsentSettings();
-                    var initialConsentState = getUserConsentState();
-
-                    var defaultConsentPayload =
+                    var defaultConsentPayload = cloneObject(consentPayloadDefaults);
+                    var updatedConsentState = getUserConsentState();
+                    var updatedDefaultConsentPayload =
                         generateConsentStatePayloadFromMappings(
-                            initialConsentState,
+                            updatedConsentState,
                             consentMappings
                         );
                     
-                    if(!isEmpty(defaultConsentPayload)) {
-                        consentPayloadAsString = JSON.stringify(
-                            defaultConsentPayload
-                        );
-
-                        sendGtagConsentDefaults(defaultConsentPayload);
+                    if (!isEmpty(defaultConsentPayload)) {
+                        sendGtagConsentDefaults(defaultConsentPayload)
+                    } else if (!isEmpty(updatedDefaultConsentPayload)) {
+                        sendGtagConsentDefaults(updatedDefaultConsentPayload)
                     }
+
+                    maybeSendConsentUpdateToGoogle(updatedConsentState)
+
                 }
 
                 forwarderSettings.remarketingOnly = forwarderSettings.remarketingOnly == 'True';
