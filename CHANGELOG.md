@@ -1,3 +1,10 @@
+## [2.3.2](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.3.1...v2.3.2) (2024-10-02)
+
+
+### Bug Fixes
+
+* send default and update consent payloads on kit init ([#58](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/issues/58)) ([200b918](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/commit/200b918ba583c41a66c2a8ecfee736f508ed61b8))
+
 ## [2.3.1](https://github.com/mparticle-integrations/mparticle-javascript-integration-adwords/compare/v2.3.0...v2.3.1) (2024-04-16)
 
 
